@@ -87,9 +87,9 @@ export function RegisterForm() {
   }
 
   return (
-    <Card className="rounded-[2rem] border-border/70 bg-white/88 shadow-[0_30px_80px_rgba(15,23,42,0.08)] backdrop-blur">
+    <Card className="rounded-[2rem] border-border bg-card shadow-[0_28px_70px_rgba(15,17,23,0.08)]">
       <CardHeader className="space-y-3 px-6 pt-6">
-        <span className="inline-flex w-fit items-center gap-2 rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold tracking-[0.18em] uppercase text-orange-700">
+        <span className="inline-flex w-fit items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold tracking-[0.18em] uppercase text-primary">
           <ShieldPlus className="size-3.5" />
           Cadastro
         </span>
@@ -97,8 +97,8 @@ export function RegisterForm() {
           Criar uma nova conta
         </CardTitle>
         <CardDescription className="text-sm leading-6 text-muted-foreground">
-          O formulario segue as regras do backend para email, CPF, idade minima
-          e confirmacao de senha.
+          Preencha seus dados para acessar uma leitura mais clara de
+          oportunidades e filtros do mercado.
         </CardDescription>
       </CardHeader>
 
@@ -114,7 +114,7 @@ export function RegisterForm() {
                 onChange={handleChange}
                 placeholder="Ana Silva"
                 autoComplete="name"
-                className="h-12 rounded-2xl bg-white"
+                className="h-12 rounded-2xl border-border bg-background"
                 required
               />
             </div>
@@ -129,7 +129,7 @@ export function RegisterForm() {
                 onChange={handleChange}
                 placeholder="ana@empresa.com"
                 autoComplete="email"
-                className="h-12 rounded-2xl bg-white"
+                className="h-12 rounded-2xl border-border bg-background"
                 required
               />
             </div>
@@ -143,7 +143,7 @@ export function RegisterForm() {
                 value={form.birthDate}
                 onChange={handleChange}
                 autoComplete="bday"
-                className="h-12 rounded-2xl bg-white"
+                className="h-12 rounded-2xl border-border bg-background"
                 required
               />
             </div>
@@ -157,7 +157,7 @@ export function RegisterForm() {
                 onChange={handleChange}
                 placeholder="000.000.000-00"
                 inputMode="numeric"
-                className="h-12 rounded-2xl bg-white"
+                className="h-12 rounded-2xl border-border bg-background"
                 required
               />
             </div>
@@ -172,7 +172,7 @@ export function RegisterForm() {
                 onChange={handleChange}
                 placeholder="Crie uma senha forte"
                 autoComplete="new-password"
-                className="h-12 rounded-2xl bg-white"
+                className="h-12 rounded-2xl border-border bg-background"
                 required
               />
             </div>
@@ -187,7 +187,7 @@ export function RegisterForm() {
                 onChange={handleChange}
                 placeholder="Repita a senha"
                 autoComplete="new-password"
-                className="h-12 rounded-2xl bg-white"
+                className="h-12 rounded-2xl border-border bg-background"
                 required
               />
             </div>
@@ -211,19 +211,13 @@ export function RegisterForm() {
           <Button
             type="submit"
             size="lg"
-            className="h-12 w-full rounded-2xl bg-[linear-gradient(135deg,#0f172a_0%,#0f766e_55%,#ea580c_100%)] text-base font-semibold text-white shadow-lg shadow-slate-900/10 hover:opacity-95"
+            className="h-12 w-full rounded-2xl bg-primary text-base font-semibold text-primary-foreground shadow-lg shadow-primary/15 hover:bg-primary/90"
             disabled={isSubmitting}
           >
             <CalendarRange className="size-4" />
             {isSubmitting ? 'Criando conta...' : 'Criar conta'}
           </Button>
         </form>
-
-        <div className="rounded-3xl border border-dashed border-border/80 bg-muted/60 px-5 py-4 text-sm leading-6 text-muted-foreground">
-          O frontend ja normaliza email e CPF antes do envio. Se quiser, no
-          proximo passo eu tambem posso encaixar refresh automatico e guard de
-          rotas autenticadas.
-        </div>
       </CardContent>
     </Card>
   )

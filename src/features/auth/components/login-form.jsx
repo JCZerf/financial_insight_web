@@ -12,8 +12,6 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
-  fetchAuthenticatedUser,
-  getApiBaseUrl,
   loginWithJwt,
   persistAuthTokens,
 } from '@/features/auth/lib/auth-client'
@@ -28,7 +26,6 @@ export function LoginForm({ defaultEmail = '' }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
-  const [sessionUser, setSessionUser] = useState(null)
 
   function handleChange(event) {
     const { name, value } = event.target
@@ -52,10 +49,6 @@ export function LoginForm({ defaultEmail = '' }) {
       })
 
       persistAuthTokens(tokens)
-
-      const user = await fetchAuthenticatedUser(tokens.access)
-
-      setSessionUser(user)
       setSuccess('Login realizado com sucesso. Tokens persistidos localmente.')
     } catch (requestError) {
       setError(requestError.message)
@@ -65,9 +58,9 @@ export function LoginForm({ defaultEmail = '' }) {
   }
 
   return (
-    <Card className="rounded-[2rem] border-border/70 bg-white/88 shadow-[0_30px_80px_rgba(15,23,42,0.08)] backdrop-blur">
+    <Card className="rounded-[2rem] border-border bg-card shadow-[0_28px_70px_rgba(15,17,23,0.08)]">
       <CardHeader className="space-y-3 px-6 pt-6">
-        <span className="inline-flex w-fit items-center gap-2 rounded-full bg-primary/8 px-3 py-1 text-xs font-semibold tracking-[0.18em] uppercase text-primary">
+        <span className="inline-flex w-fit items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold tracking-[0.18em] uppercase text-primary">
           <Fingerprint className="size-3.5" />
           Login
         </span>
@@ -75,8 +68,8 @@ export function LoginForm({ defaultEmail = '' }) {
           Entrar na plataforma
         </CardTitle>
         <CardDescription className="text-sm leading-6 text-muted-foreground">
-          Use seu email e senha para receber `access` e `refresh`, depois validar
-          a sessao com `/users/me/`.
+          Acesse sua conta para acompanhar filtros, insights e oportunidades
+          analisadas a partir de dados publicos do mercado.
         </CardDescription>
       </CardHeader>
 
@@ -92,7 +85,7 @@ export function LoginForm({ defaultEmail = '' }) {
               onChange={handleChange}
               placeholder="voce@empresa.com"
               autoComplete="email"
-              className="h-12 rounded-2xl bg-white"
+              className="h-12 rounded-2xl border-border bg-background"
               required
             />
           </div>
@@ -107,7 +100,7 @@ export function LoginForm({ defaultEmail = '' }) {
               onChange={handleChange}
               placeholder="Sua senha"
               autoComplete="current-password"
-              className="h-12 rounded-2xl bg-white"
+              className="h-12 rounded-2xl border-border bg-background"
               required
             />
           </div>
@@ -130,41 +123,13 @@ export function LoginForm({ defaultEmail = '' }) {
           <Button
             type="submit"
             size="lg"
-            className="h-12 w-full rounded-2xl bg-[linear-gradient(135deg,#0f766e_0%,#ea580c_100%)] text-base font-semibold text-white shadow-lg shadow-orange-500/10 hover:opacity-95"
+            className="h-12 w-full rounded-2xl bg-primary text-base font-semibold text-primary-foreground shadow-lg shadow-primary/15 hover:bg-primary/90"
             disabled={isSubmitting}
           >
             <KeyRound className="size-4" />
             {isSubmitting ? 'Entrando...' : 'Entrar'}
           </Button>
         </form>
-
-        <div className="grid gap-3 rounded-3xl bg-slate-950 px-5 py-4 text-slate-100">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-xs font-semibold tracking-[0.2em] uppercase text-slate-400">
-                API base
-              </p>
-              <p className="mt-1 text-sm text-slate-200">{getApiBaseUrl()}</p>
-            </div>
-            <div className="rounded-full bg-white/8 px-3 py-1 text-xs text-slate-300">
-              `access_token` + `refresh_token`
-            </div>
-          </div>
-
-          {sessionUser ? (
-            <div className="grid gap-1 rounded-2xl border border-white/10 bg-white/6 px-4 py-3 text-sm">
-              <span className="font-medium text-white">{sessionUser.name}</span>
-              <span className="text-slate-300">{sessionUser.email}</span>
-              <span className="text-slate-400">
-                Autorizado: {sessionUser.is_authorized ? 'sim' : 'nao'}
-              </span>
-            </div>
-          ) : (
-            <p className="text-sm leading-6 text-slate-400">
-              Depois do login, os dados de `/api/auth/users/me/` aparecem aqui.
-            </p>
-          )}
-        </div>
       </CardContent>
     </Card>
   )
