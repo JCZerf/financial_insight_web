@@ -50,17 +50,17 @@ export function Sidebar({ className, isCollapsed, onToggle, currentPath = '/home
               <p className="text-xs text-muted-foreground">Análise de FIIs</p>
             </div>
           )}
-          <button
-            onClick={onToggle}
-            className={cn(
-              'hidden items-center justify-center rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:flex',
-              !isCollapsed && 'ml-auto'
-            )}
-            aria-label={isCollapsed ? 'Expandir menu' : 'Recolher menu'}
-          >
-            {isCollapsed ? <ChevronRight className="size-4" /> : <ChevronLeft className="size-4" />}
-          </button>
         </div>
+
+        <button
+          type="button"
+          onClick={onToggle}
+          className="absolute -right-3 top-24 hidden size-6 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-sm transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:flex"
+          aria-label={isCollapsed ? 'Expandir menu' : 'Recolher menu'}
+          title={isCollapsed ? 'Expandir menu' : 'Recolher menu'}
+        >
+          {isCollapsed ? <ChevronRight className="size-3.5" /> : <ChevronLeft className="size-3.5" />}
+        </button>
 
         <nav className="flex-1 overflow-y-auto px-2 py-3">
           <ul className="space-y-1">
