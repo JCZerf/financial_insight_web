@@ -1,21 +1,10 @@
-import { BadgeCheck, ShieldCheck } from 'lucide-react'
+import { ArrowUpRight, BadgeCheck, BarChart3 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-
-const highlights = [
-  {
-    title: 'JWT pronto para producao',
-    description: 'Fluxo de login, refresh e sessao pensado para trabalhar bem com a API.',
-  },
-  {
-    title: 'Cadastro com regras reais',
-    description: 'Campos, validacoes e normalizacao seguem o contrato documentado do backend.',
-  },
-  {
-    title: 'Base pronta para crescer',
-    description: 'Separacao por paginas, features e componentes para evitar acoplamento cedo.',
-  },
+const previewRows = [
+  { label: 'Dividend yield', value: '8,74%', tone: 'text-financial-positive' },
+  { label: 'P/VP medio', value: '0,91', tone: 'text-white' },
+  { label: 'Liquidez diaria', value: 'R$ 1,8 mi', tone: 'text-white' },
 ]
 
 export function AuthShell({
@@ -25,89 +14,96 @@ export function AuthShell({
   currentView,
   logoSrc,
   logoAlt = '',
-  heroHighlights = highlights,
   children,
 }) {
   return (
-    <main className="grid min-h-screen bg-[radial-gradient(circle_at_top,rgba(0,137,123,0.09),transparent_30%),linear-gradient(180deg,#fafbfc_0%,#f7f8fa_100%)] lg:grid-cols-[1.05fr_0.95fr]">
-      <section className="relative overflow-hidden bg-[linear-gradient(160deg,#0f1117_0%,#0d5f56_58%,#00897b_100%)] px-6 py-10 text-white sm:px-10 lg:px-14 lg:py-14">
-        <div className="absolute left-10 top-10 h-28 w-28 rounded-full bg-white/8 blur-3xl" />
-        <div className="absolute bottom-10 right-10 h-32 w-32 rounded-full bg-emerald-200/10 blur-3xl" />
+    <main className="grid min-h-screen overflow-x-hidden bg-[linear-gradient(180deg,#fbfcfd_0%,#f6f8fa_100%)] lg:h-screen lg:min-h-0 lg:overflow-hidden lg:grid-cols-[minmax(24rem,0.82fr)_minmax(34rem,1.18fr)]">
+      <section className="relative max-w-full overflow-hidden bg-[#0f1117] px-6 py-8 text-white sm:px-10 lg:px-12 xl:px-14">
+        <div className="absolute inset-y-0 right-0 w-px bg-white/10" />
+        <div className="absolute inset-0 bg-[linear-gradient(165deg,rgba(0,137,123,0.18)_0%,transparent_46%),linear-gradient(0deg,rgba(0,137,123,0.22),transparent_34%)]" />
 
-        <div className="relative flex h-full flex-col justify-between gap-10">
-          <div className="space-y-6">
+        <div className="relative mx-auto flex h-full w-[calc(100vw-3rem)] max-w-[31rem] flex-col justify-center gap-10 sm:w-full">
+          <div className="flex items-center gap-4">
             {logoSrc ? (
-              <div className="inline-flex w-fit items-center rounded-[1.75rem] border border-white/12 bg-white/8 px-4 py-3 shadow-2xl shadow-black/10 backdrop-blur">
+              <div className="inline-flex size-16 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] p-2.5 shadow-[0_18px_45px_rgba(0,0,0,0.18)]">
                 <img
                   src={logoSrc}
                   alt={logoAlt}
-                  className="h-14 w-auto sm:h-16"
+                  className="h-auto w-full"
                 />
               </div>
             ) : null}
 
-            {eyebrow ? (
-              <span className="inline-flex w-fit items-center rounded-full border border-white/18 bg-white/10 px-4 py-1 text-xs font-semibold tracking-[0.28em] uppercase text-white/90">
-                {eyebrow}
-              </span>
-            ) : null}
-
-            <div className="max-w-2xl space-y-4">
-              <h1 className="text-4xl leading-none font-semibold text-balance sm:text-5xl lg:text-6xl">
-                {title}
-              </h1>
-              <p className="max-w-xl text-base leading-7 text-white/78 sm:text-lg">
-                {description}
+            <div>
+              <p className="text-base font-semibold leading-5">Financial Insight</p>
+              <p className="text-sm leading-6 text-white/58">
+                Analise de FIIs e renda passiva
               </p>
             </div>
           </div>
 
-          <div className="grid gap-4">
-            {heroHighlights.map((item) => (
-              <Card
-                key={item.title}
-                className="border-white/10 bg-white/8 text-white shadow-2xl shadow-black/10 backdrop-blur"
-              >
-                <CardHeader className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <span className="inline-flex size-10 items-center justify-center rounded-2xl bg-white/10">
-                      <ShieldCheck className="size-5" />
-                    </span>
-                    <CardTitle className="text-lg font-semibold text-white">
-                      {item.title}
-                    </CardTitle>
+          <div className="space-y-8">
+            <div className="space-y-4">
+              {eyebrow ? (
+                <span className="inline-flex items-center rounded-full border border-white/12 bg-white/7 px-3 py-1 text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-white/72">
+                  {eyebrow}
+                </span>
+              ) : null}
+
+              <h1 className="max-w-[19rem] text-[1.95rem] leading-tight font-semibold text-balance sm:max-w-[28rem] sm:text-4xl lg:text-[2.8rem]">
+                {title}
+              </h1>
+              <p className="max-w-full text-base leading-7 text-white/68 sm:max-w-[27rem]">
+                {description}
+              </p>
+            </div>
+
+            <div className="hidden rounded-2xl border border-white/10 bg-white/[0.06] p-4 shadow-[0_22px_60px_rgba(0,0,0,0.18)] backdrop-blur sm:block">
+              <div className="mb-4 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex size-10 items-center justify-center rounded-xl bg-primary/22 text-primary">
+                    <BarChart3 className="size-5" />
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm leading-6 text-white/80">
-                    {item.description}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
+                  <div>
+                    <p className="text-sm font-semibold">Resumo de leitura</p>
+                    <p className="text-xs leading-5 text-white/54">Base de indicadores</p>
+                  </div>
+                </div>
+                <ArrowUpRight className="size-4 text-white/45" />
+              </div>
+
+              <div className="divide-y divide-white/8 rounded-xl border border-white/8 bg-[#101820]/78">
+                {previewRows.map((row) => (
+                  <div key={row.label} className="flex items-center justify-between gap-4 px-4 py-3">
+                    <span className="text-sm text-white/62">{row.label}</span>
+                    <span className={`text-sm font-semibold ${row.tone}`}>{row.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="px-6 py-8 sm:px-10 lg:px-14 lg:py-12">
-        <div className="mx-auto flex min-h-full w-full max-w-xl flex-col justify-center gap-8">
-          <div className="flex items-center justify-between gap-4">
-            <div className="space-y-1">
-              <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold tracking-[0.2em] uppercase text-primary">
+      <section className="max-w-full px-6 py-8 sm:px-10 lg:px-12 xl:px-16">
+        <div className="mx-auto flex min-h-full w-[calc(100vw-3rem)] min-w-0 max-w-[36rem] flex-col justify-center gap-7 sm:w-full">
+          <div className="grid gap-5 sm:grid-cols-[1fr_auto] sm:items-start">
+            <div className="space-y-2">
+              <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-semibold tracking-[0.22em] uppercase text-primary">
                 <BadgeCheck className="size-3.5" />
                 Acesso seguro
               </span>
-              <p className="text-sm text-muted-foreground">
-                Analise de investimentos com uma interface mais clara e objetiva.
+              <p className="max-w-xs text-sm leading-6 text-muted-foreground">
+                Entre para acompanhar seus filtros e oportunidades em um so lugar.
               </p>
             </div>
 
-            <nav className="hidden items-center gap-2 rounded-full border border-border bg-white p-1 shadow-sm sm:flex">
+            <nav className="flex w-fit items-center gap-2 rounded-full border border-border bg-white p-1.5 shadow-[0_12px_30px_rgba(15,17,23,0.06)]">
               <Link
                 to="/login"
                 className={`rounded-full px-4 py-2 text-sm font-medium transition ${
                   currentView === 'login'
-                    ? 'bg-primary text-primary-foreground'
+                    ? 'bg-primary text-primary-foreground shadow-sm'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
@@ -117,7 +113,7 @@ export function AuthShell({
                 to="/cadastro"
                 className={`rounded-full px-4 py-2 text-sm font-medium transition ${
                   currentView === 'register'
-                    ? 'bg-primary text-primary-foreground'
+                    ? 'bg-primary text-primary-foreground shadow-sm'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >

@@ -11,6 +11,32 @@ export function formatCpf(value) {
     .replace(/\.(\d{3})(\d)/, '.$1-$2')
 }
 
+export function normalizeBirthDate(value) {
+  return value.replace(/\D/g, '').slice(0, 8)
+}
+
+export function formatBirthDate(value) {
+  const digits = normalizeBirthDate(value)
+
+  return digits
+    .replace(/^(\d{2})(\d)/, '$1/$2')
+    .replace(/^(\d{2})\/(\d{2})(\d)/, '$1/$2/$3')
+}
+
+export function birthDateToApiDate(value) {
+  const digits = normalizeBirthDate(value)
+
+  if (digits.length !== 8) {
+    return ''
+  }
+
+  const day = digits.slice(0, 2)
+  const month = digits.slice(2, 4)
+  const year = digits.slice(4, 8)
+
+  return `${year}-${month}-${day}`
+}
+
 export function isValidCpf(value) {
   const digits = normalizeCpf(value)
 
@@ -50,7 +76,8 @@ export function isValidCpf(value) {
 }
 
 function getAgeFromBirthDate(value) {
-  const birthDate = new Date(`${value}T00:00:00`)
+  const apiDate = birthDateToApiDate(value)
+  const birthDate = new Date(`${apiDate}T00:00:00`)
   const today = new Date()
   let age = today.getFullYear() - birthDate.getFullYear()
   const monthDifference = today.getMonth() - birthDate.getMonth()
@@ -65,6 +92,23 @@ function getAgeFromBirthDate(value) {
   return age
 }
 
+function isValidBirthDate(value) {
+  const apiDate = birthDateToApiDate(value)
+
+  if (!apiDate) {
+    return false
+  }
+
+  const [year, month, day] = apiDate.split('-').map(Number)
+  const date = new Date(year, month - 1, day)
+
+  return (
+    date.getFullYear() === year &&
+    date.getMonth() === month - 1 &&
+    date.getDate() === day
+  )
+}
+
 export function validateRegisterForm(values) {
   const trimmedName = values.name.trim().replace(/\s+/g, ' ')
   const normalizedEmail = values.email.trim().toLowerCase()
@@ -72,6 +116,10 @@ export function validateRegisterForm(values) {
 
   if (!normalizedEmail) {
     return 'Informe um email.'
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+    return 'Informe um email valido.'
   }
 
   if (!trimmedName || trimmedName.length < 2) {
@@ -84,6 +132,10 @@ export function validateRegisterForm(values) {
 
   if (!values.birthDate) {
     return 'Informe a data de nascimento.'
+  }
+
+  if (!isValidBirthDate(values.birthDate)) {
+    return 'Informe uma data de nascimento valida no formato dd/mm/aaaa.'
   }
 
   const age = getAgeFromBirthDate(values.birthDate)
@@ -102,6 +154,24 @@ export function validateRegisterForm(values) {
 
   if (values.password !== values.confirmPassword) {
     return 'A confirmacao de senha precisa ser igual a senha.'
+  }
+
+  return ''
+}
+
+export function validateLoginForm(values) {
+  const normalizedEmail = values.email.trim().toLowerCase()
+
+  if (!normalizedEmail) {
+    return 'Informe seu email.'
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+    return 'Informe um email valido.'
+  }
+
+  if (!values.password) {
+    return 'Informe sua senha.'
   }
 
   return ''

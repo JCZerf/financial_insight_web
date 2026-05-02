@@ -14,6 +14,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { registerUser } from '@/features/auth/lib/auth-client'
 import {
+  birthDateToApiDate,
+  formatBirthDate,
   formatCpf,
   normalizeCpf,
   validateRegisterForm,
@@ -42,7 +44,12 @@ export function RegisterForm() {
 
     setForm((current) => ({
       ...current,
-      [name]: name === 'cpf' ? formatCpf(value) : value,
+      [name]:
+        name === 'cpf'
+          ? formatCpf(value)
+          : name === 'birthDate'
+            ? formatBirthDate(value)
+            : value,
     }))
   }
 
@@ -64,7 +71,7 @@ export function RegisterForm() {
       const payload = await registerUser({
         email: form.email.trim().toLowerCase(),
         name: form.name.trim().replace(/\s+/g, ' '),
-        birth_date: form.birthDate,
+        birth_date: birthDateToApiDate(form.birthDate),
         cpf: normalizeCpf(form.cpf),
         password: form.password,
         re_password: form.confirmPassword,
@@ -87,7 +94,7 @@ export function RegisterForm() {
   }
 
   return (
-    <Card className="rounded-[2rem] border-border bg-card shadow-[0_28px_70px_rgba(15,17,23,0.08)]">
+    <Card className="w-full min-w-0 max-w-full rounded-[2rem] border-border bg-card shadow-[0_28px_70px_rgba(15,17,23,0.08)]">
       <CardHeader className="space-y-3 px-6 pt-6">
         <span className="inline-flex w-fit items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold tracking-[0.18em] uppercase text-primary">
           <ShieldPlus className="size-3.5" />
@@ -103,7 +110,7 @@ export function RegisterForm() {
       </CardHeader>
 
       <CardContent className="space-y-6 px-6 pb-6">
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form className="space-y-4" onSubmit={handleSubmit} noValidate>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="register-name">Nome completo</Label>
@@ -139,10 +146,13 @@ export function RegisterForm() {
               <Input
                 id="register-birthDate"
                 name="birthDate"
-                type="date"
+                type="text"
                 value={form.birthDate}
                 onChange={handleChange}
+                placeholder="02/08/1997"
+                inputMode="numeric"
                 autoComplete="bday"
+                maxLength={10}
                 className="h-12 rounded-2xl border-border bg-background"
                 required
               />

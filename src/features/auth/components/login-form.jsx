@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Fingerprint, KeyRound } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -15,10 +16,18 @@ import {
   loginWithJwt,
   persistAuthTokens,
 } from '@/features/auth/lib/auth-client'
+import { validateLoginForm } from '@/features/auth/lib/auth-validators'
 
 import { FeedbackAlert } from './feedback-alert'
 
+const validationMessages = new Set([
+  'Informe seu email.',
+  'Informe um email valido.',
+  'Informe sua senha.',
+])
+
 export function LoginForm({ defaultEmail = '' }) {
+  const navigate = useNavigate()
   const [form, setForm] = useState({
     email: defaultEmail,
     password: '',
@@ -26,6 +35,7 @@ export function LoginForm({ defaultEmail = '' }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const isFieldError = validationMessages.has(error)
 
   function handleChange(event) {
     const { name, value } = event.target
@@ -42,6 +52,14 @@ export function LoginForm({ defaultEmail = '' }) {
     setError('')
     setSuccess('')
 
+    const validationError = validateLoginForm(form)
+
+    if (validationError) {
+      setError(validationError)
+      setIsSubmitting(false)
+      return
+    }
+
     try {
       const tokens = await loginWithJwt({
         email: form.email.trim().toLowerCase(),
@@ -50,6 +68,7 @@ export function LoginForm({ defaultEmail = '' }) {
 
       persistAuthTokens(tokens)
       setSuccess('Login realizado com sucesso. Tokens persistidos localmente.')
+      navigate('/home', { replace: true })
     } catch (requestError) {
       setError(requestError.message)
     } finally {
@@ -58,7 +77,7 @@ export function LoginForm({ defaultEmail = '' }) {
   }
 
   return (
-    <Card className="rounded-[2rem] border-border bg-card shadow-[0_28px_70px_rgba(15,17,23,0.08)]">
+    <Card className="w-full min-w-0 max-w-full rounded-[2rem] border-border bg-card shadow-[0_28px_70px_rgba(15,17,23,0.08)]">
       <CardHeader className="space-y-3 px-6 pt-6">
         <span className="inline-flex w-fit items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold tracking-[0.18em] uppercase text-primary">
           <Fingerprint className="size-3.5" />
@@ -74,7 +93,7 @@ export function LoginForm({ defaultEmail = '' }) {
       </CardHeader>
 
       <CardContent className="space-y-6 px-6 pb-6">
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form className="space-y-4" onSubmit={handleSubmit} noValidate>
           <div className="space-y-2">
             <Label htmlFor="login-email">Email</Label>
             <Input
@@ -86,7 +105,7 @@ export function LoginForm({ defaultEmail = '' }) {
               placeholder="voce@empresa.com"
               autoComplete="email"
               className="h-12 rounded-2xl border-border bg-background"
-              required
+              aria-invalid={isFieldError}
             />
           </div>
 
@@ -101,7 +120,7 @@ export function LoginForm({ defaultEmail = '' }) {
               placeholder="Sua senha"
               autoComplete="current-password"
               className="h-12 rounded-2xl border-border bg-background"
-              required
+              aria-invalid={isFieldError}
             />
           </div>
 
