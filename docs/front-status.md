@@ -2,7 +2,7 @@
 
 ## Visao geral
 
-O frontend da Financial Insight esta em uma fase inicial funcional, com fluxo de autenticacao, cadastro e uma area autenticada provisoria.
+O frontend da Financial Insight possui fluxo autenticado funcional, telas de leitura dos FIIs e uma area de analise com filtros personalizados. A experiencia esta organizada para separar a visao executiva do mercado da triagem operacional de fundos.
 
 A aplicacao usa React, Vite, Tailwind CSS e componentes baseados em `shadcn/ui`. A identidade visual esta documentada em `docs/visual-identity.md`.
 
@@ -13,7 +13,10 @@ A aplicacao usa React, Vite, Tailwind CSS e componentes baseados em `shadcn/ui`.
 | `/` | Redirecionamento | Envia para `/home` se houver token salvo; caso contrario, envia para `/login`. |
 | `/login` | Login | Funcional com validacao local, chamada JWT e redirecionamento pos-login. |
 | `/cadastro` | Cadastro | Funcional com validacoes locais e envio para a API. |
-| `/home` | Dashboard inicial | Placeholder autenticado para confirmar login bem-sucedido. |
+| `/home` | Visao Geral | Resumo executivo dos principais FIIs com maior potencial, melhor oportunidade, cards de sintese e listas de leitura rapida. |
+| `/analise` | Analise de Fundos | Tela de triagem com filtros personalizados por segmento, rendimento minimo, preco/patrimonio maximo, liquidez minima e limite de itens. |
+| `/home/fundo/:ticker` | Detalhe do Fundo | Exibe cotacao, leitura inicial, indicadores, mercado/liquidez, patrimonio, resultados financeiros e dados de imoveis. |
+| `/perfil` | Perfil | Permite consultar e atualizar dados do usuario autenticado. |
 | `*` | Fallback | Redireciona para `/login`. |
 
 ## Autenticacao
@@ -32,7 +35,7 @@ Ao autenticar com sucesso:
 - `refresh_token` e salvo no `localStorage`.
 - O usuario e redirecionado para `/home`.
 
-A protecao atual de rota e simples: a rota `/home` verifica apenas se existe `access_token` no `localStorage`. Ainda nao existe validacao de expiracao, refresh automatico ou consulta obrigatoria ao usuario autenticado.
+A protecao de rota verifica a existencia de tokens armazenados antes de permitir acesso as rotas autenticadas. As chamadas autenticadas usam o `access_token` e, em caso de resposta 401, tentam renovar a sessao com o `refresh_token`. Se a renovacao falhar, os tokens sao removidos e o usuario e redirecionado para `/login`.
 
 ## Proxy de desenvolvimento
 
@@ -109,16 +112,24 @@ As telas de login e cadastro usam `AuthShell`, com:
 
 O seletor nativo de data foi removido para evitar o padrao americano e a interface inconsistente do navegador.
 
+Na area autenticada, a navegacao principal usa menu lateral com:
+
+- link para Visao Geral;
+- link para Analise;
+- link para Perfil;
+- modo recolhido em desktop;
+- comportamento compacto em telas menores.
+
+A Visao Geral tem foco em leitura rapida dos FIIs com maior potencial, evitando concentrar funcionalidades operacionais na mesma tela. A tela de Analise concentra os filtros personalizados e retorna apenas os fundos compativeis com os criterios informados. Quando nao ha resultados, a interface exibe estado vazio com mensagem orientativa.
+
 ## Pontos pendentes
 
-- Implementar dashboard real em `/home`.
-- Validar token expirado e remover sessao invalida.
-- Implementar refresh token automatico.
-- Buscar dados do usuario autenticado em `/api/auth/users/me/`.
+- Definir estrategia de logout global compartilhada entre as telas autenticadas.
 - Melhorar tratamento de erros por campo no cadastro quando a API retornar respostas especificas.
-- Definir estrategia de logout global.
 - Revisar persistencia de token antes de producao, especialmente riscos de `localStorage`.
+- Adicionar testes de fluxo das telas de Visao Geral, Analise e Detalhe do Fundo.
 - Adicionar testes de fluxo de autenticacao e validacao de formularios.
+- Implementar monitoramento de ativos, precos-alvo e alertas quando existirem endpoints e modelos no backend.
 
 ## Comandos de verificacao
 
