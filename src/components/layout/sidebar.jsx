@@ -1,8 +1,8 @@
-import { Home, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Home, ChevronLeft, ChevronRight, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import logo from '@/assets/financial_insight_logo.png'
 
-export function Sidebar({ className, isCollapsed, onToggle }) {
+export function Sidebar({ className, isCollapsed, onToggle, currentPath = '/home' }) {
   return (
     <aside
       className={cn(
@@ -42,15 +42,34 @@ export function Sidebar({ className, isCollapsed, onToggle }) {
           <ul className="space-y-1">
             <li>
               <a
-                href="#"
+                href="/home"
                 className={cn(
-                  'flex items-center rounded-lg bg-primary/10 text-sm font-medium text-primary transition-colors',
-                  isCollapsed ? 'justify-center px-3 py-2.5' : 'gap-3 px-3 py-2.5'
+                  'flex items-center rounded-lg text-sm font-medium transition-colors hover:bg-muted',
+                  isCollapsed ? 'justify-center px-3 py-2.5' : 'gap-3 px-3 py-2.5',
+                  currentPath === '/home' 
+                    ? 'bg-primary/10 text-primary' 
+                    : 'text-muted-foreground hover:text-foreground'
                 )}
                 title="Dashboard"
               >
                 <Home className="size-5 shrink-0" />
                 {!isCollapsed && 'Dashboard'}
+              </a>
+            </li>
+            <li>
+              <a
+                href="/perfil"
+                className={cn(
+                  'flex items-center rounded-lg text-sm font-medium transition-colors hover:bg-muted',
+                  isCollapsed ? 'justify-center px-3 py-2.5' : 'gap-3 px-3 py-2.5',
+                  currentPath === '/perfil' 
+                    ? 'bg-primary/10 text-primary' 
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+                title="Perfil"
+              >
+                <User className="size-5 shrink-0" />
+                {!isCollapsed && 'Perfil'}
               </a>
             </li>
           </ul>

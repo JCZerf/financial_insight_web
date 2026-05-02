@@ -4,6 +4,7 @@ import { hasStoredAuthTokens } from '@/features/auth/lib/auth-client'
 import { HomePage } from '@/pages/home/home-page'
 import { LoginPage } from '@/pages/login/login-page'
 import { RegisterPage } from '@/pages/register/register-page'
+import { ProfilePage } from '@/pages/profile/profile-page'
 
 function PrivateRoute({ children }) {
   return hasStoredAuthTokens() ? children : <Navigate to="/login" replace />
@@ -24,6 +25,14 @@ export function AppRouter() {
           element={(
             <PrivateRoute>
               <HomePage />
+            </PrivateRoute>
+          )}
+        />
+        <Route
+          path="/perfil"
+          element={(
+            <PrivateRoute>
+              <ProfilePage />
             </PrivateRoute>
           )}
         />

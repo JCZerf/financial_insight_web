@@ -147,3 +147,18 @@ export async function fetchFundDetail(ticker) {
     errorMessage: 'Erro ao carregar detalhes do fundo.',
   })
 }
+
+export async function fetchUserProfile() {
+  return requestApi('/api/auth/users/me/', {
+    method: 'GET',
+    errorMessage: 'Erro ao carregar perfil do usuário.',
+  })
+}
+
+export async function updateUserProfile(data) {
+  return requestApi('/api/auth/users/me/', {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+    errorMessage: 'Erro ao atualizar perfil.',
+  })
+}

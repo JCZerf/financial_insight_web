@@ -48,6 +48,7 @@ export function HomePage() {
       <Sidebar 
         isCollapsed={sidebarCollapsed} 
         onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+        currentPath="/home"
       />
       
       <main className={cn(
@@ -100,52 +101,34 @@ export function HomePage() {
 
             <BestOpportunityCard fund={dashboard.summary?.best_opportunity} />
 
-            <div className="rounded-lg border border-border bg-card p-5">
-              <h3 className="mb-3 text-sm font-semibold text-foreground">
-                Informações da Base de Dados
-              </h3>
-                  <div className="space-y-2.5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Total de FIIs</span>
-                      <span className="text-sm font-semibold text-foreground">
-                        {dashboard.metadata?.total_funds ?? 0}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Fundos analisados</span>
-                      <span className="text-sm font-semibold text-foreground">
-                        {dashboard.metadata?.ranked_funds ?? 0}
-                      </span>
-                    </div>
-                    {dashboard.metadata?.latest_collected_at_utc && (
-                      <div className="mt-3 border-t border-border pt-2.5">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-xs text-muted-foreground">Última atualização:</span>
-                          <span className="text-xs font-medium text-foreground">
-                            {new Date(dashboard.metadata.latest_collected_at_utc).toLocaleDateString('pt-BR', {
-                              day: '2-digit',
-                              month: '2-digit',
-                              year: 'numeric',
-                            })}
-                            {' às '}
-                            {new Date(dashboard.metadata.latest_collected_at_utc).toLocaleTimeString('pt-BR', {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-              </div>
-            </div>
-
             <Tabs defaultValue="opportunities" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="opportunities">Oportunidades</TabsTrigger>
-                <TabsTrigger value="dividend">Maiores Rendimentos</TabsTrigger>
-                <TabsTrigger value="discounted">Descontados</TabsTrigger>
-                <TabsTrigger value="liquid">Mais Líquidos</TabsTrigger>
-              </TabsList>
+              <div className="flex items-center justify-between">
+                <TabsList className="grid w-fit grid-cols-4">
+                  <TabsTrigger value="opportunities">Oportunidades</TabsTrigger>
+                  <TabsTrigger value="dividend">Maiores Rendimentos</TabsTrigger>
+                  <TabsTrigger value="discounted">Descontados</TabsTrigger>
+                  <TabsTrigger value="liquid">Mais Líquidos</TabsTrigger>
+                </TabsList>
+                
+                {/* Informações da base de dados - compacta */}
+                {dashboard.metadata?.latest_collected_at_utc && (
+                  <div className="hidden items-center gap-2 text-xs text-muted-foreground lg:flex">
+                    <span>
+                      {dashboard.metadata?.ranked_funds ?? 0} de {dashboard.metadata?.total_funds ?? 0} fundos
+                    </span>
+                    <span>•</span>
+                    <span>
+                      Atualizado em {new Date(dashboard.metadata.latest_collected_at_utc).toLocaleDateString('pt-BR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                      })} às {new Date(dashboard.metadata.latest_collected_at_utc).toLocaleTimeString('pt-BR', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </span>
+                  </div>
+                )}
+              </div>
 
               <TabsContent value="opportunities" className="mt-6">
                 <FundsList
