@@ -2,7 +2,7 @@
 
 Frontend da Financial Insight, uma plataforma para organizar a leitura de indicadores de mercado com foco inicial em FIIs, renda passiva e uma experiencia visual mais objetiva.
 
-O projeto esta em fase inicial funcional: ja possui telas de login, cadastro, validacoes locais, integracao com autenticação JWT e uma rota autenticada provisoria para confirmar o fluxo de acesso.
+O projeto ja possui fluxo autenticado funcional, dashboard de visao geral, analise com filtros, comparador de FIIs, pagina de detalhes de fundo, perfil de usuario e area administrativa para superusuarios.
 
 ## Stack
 
@@ -82,10 +82,10 @@ Serve o build gerado localmente para conferencia.
 | `/cadastro` | Tela de cadastro com mascara de CPF e data brasileira. |
 | `/home` | Visao Geral - Dashboard principal com listagens de fundos por categoria. |
 | `/home/fundo/:ticker` | Pagina de detalhes completos de um fundo especifico. |
-| `/comparador` | Ferramenta de comparacao lado a lado entre fundos. |
-| `/analise` | Pagina de analise (em desenvolvimento). |
-| `/administracao` | Painel administrativo (em desenvolvimento). |
-| `/perfil` | Pagina de perfil do usuario (em desenvolvimento). |
+| `/comparador` | Ferramenta de comparacao lado a lado entre 2 e 4 fundos. |
+| `/analise` | Pagina de analise com filtros personalizados para triagem de fundos. |
+| `/administracao` | Painel administrativo para execucao manual de atualizacao de dados (apenas superusuario). |
+| `/perfil` | Pagina de perfil com consulta e atualizacao dos dados do usuario autenticado. |
 
 ## Autenticacao
 
@@ -103,7 +103,9 @@ Em desenvolvimento, essa rota e encaminhada pelo proxy do Vite para:
 
 Ao autenticar com sucesso, o front salva `access_token` e `refresh_token` no `localStorage` e redireciona para `/home`.
 
-A protecao de rota atual e simples e verifica apenas a existencia do `access_token`. Validacao de expiracao, refresh automatico e carregamento do usuario autenticado ainda estao pendentes.
+A protecao de rota verifica a existencia de token salvo antes de permitir acesso as rotas autenticadas.
+
+As chamadas autenticadas usam `access_token` e, em caso de `401`, o front tenta renovar a sessao com `refresh_token`. Se a renovacao falhar, os tokens sao removidos e o usuario e redirecionado para `/login`.
 
 ## Validacoes de formulario
 
@@ -133,14 +135,11 @@ Antes do envio para a API, a data e convertida para `yyyy-mm-dd` e o CPF e norma
 
 ## Pendencias principais
 
-- Validar expiracao do token.
-- Implementar refresh token automatico.
-- Buscar dados do usuario autenticado.
-- Melhorar tratamento de erros por campo vindos da API.
-- Definir estrategia final de persistencia de sessao para producao.
-- Adicionar testes para autenticacao e formularios.
-- Implementar funcionalidades de favoritos/watchlist.
-- Adicionar filtros avancados nas listagens de fundos.
+- Definir estrategia final de persistencia de sessao para producao (avaliar riscos de `localStorage`).
+- Melhorar tratamento de erros por campo no cadastro quando a API retornar respostas especificas.
+- Adicionar testes automatizados de autenticacao, formularios e fluxo das telas autenticadas.
+- Implementar funcionalidades de favoritos/watchlist quando houver suporte completo no backend.
+- Implementar monitoramento de ativos, preco-alvo e alertas quando houver endpoints dedicados.
 
 ## Funcionalidades Implementadas
 
@@ -213,7 +212,7 @@ Pagina completa com todas as informacoes disponiveis sobre um fundo especifico:
 
 ### Comparador de Fundos (`/comparador`)
 
-Ferramenta para comparacao lado a lado de ate 2 fundos:
+Ferramenta para comparacao lado a lado de 2 ate 4 fundos:
 
 **Recursos:**
 - Busca de fundos com dropdown compacto

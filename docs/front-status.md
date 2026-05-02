@@ -146,12 +146,11 @@ A area de Administracao e exibida apenas para superusuarios e permite executar m
 
 ## Pontos pendentes
 
-- Definir estrategia de logout global compartilhada entre as telas autenticadas.
 - Melhorar tratamento de erros por campo no cadastro quando a API retornar respostas especificas.
 - Revisar persistencia de token antes de producao, especialmente riscos de `localStorage`.
-- Adicionar testes de fluxo das telas de Visao Geral, Analise e Detalhe do Fundo.
-- Adicionar testes de fluxo de autenticacao e validacao de formularios.
-- Implementar monitoramento de ativos, precos-alvo e alertas quando existirem endpoints e modelos no backend.
+- Adicionar testes automatizados de autenticacao, validacao de formularios e fluxo das telas autenticadas.
+- Implementar favoritos/watchlist quando houver suporte completo no backend.
+- Implementar monitoramento de ativos, preco-alvo e alertas quando existirem endpoints e modelos no backend.
 
 ## Comandos de verificacao
 
