@@ -1,4 +1,4 @@
-import { Home, ChevronLeft, ChevronRight, SlidersHorizontal, User } from 'lucide-react'
+import { Home, PanelLeftClose, PanelLeftOpen, SlidersHorizontal, User } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { cn } from '@/lib/utils'
@@ -52,16 +52,6 @@ export function Sidebar({ className, isCollapsed, onToggle, currentPath = '/home
           )}
         </div>
 
-        <button
-          type="button"
-          onClick={onToggle}
-          className="absolute -right-3 top-12 hidden size-6 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-sm transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:flex"
-          aria-label={isCollapsed ? 'Expandir menu' : 'Recolher menu'}
-          title={isCollapsed ? 'Expandir menu' : 'Recolher menu'}
-        >
-          {isCollapsed ? <ChevronRight className="size-3.5" /> : <ChevronLeft className="size-3.5" />}
-        </button>
-
         <nav className="flex-1 overflow-y-auto px-2 py-3">
           <ul className="space-y-1">
             {navigationItems.map((item) => {
@@ -90,6 +80,26 @@ export function Sidebar({ className, isCollapsed, onToggle, currentPath = '/home
             })}
           </ul>
         </nav>
+
+        <div className="hidden border-t border-border px-2 py-2 md:block">
+          <button
+            type="button"
+            onClick={onToggle}
+            className={cn(
+              'flex w-full items-center rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+              isCollapsed ? 'justify-center' : 'gap-3'
+            )}
+            aria-label={isCollapsed ? 'Expandir menu' : 'Recolher menu'}
+            title={isCollapsed ? 'Expandir menu' : 'Recolher menu'}
+          >
+            {isCollapsed ? (
+              <PanelLeftOpen className="size-5 shrink-0" />
+            ) : (
+              <PanelLeftClose className="size-5 shrink-0" />
+            )}
+            {!isCollapsed && <span>Recolher menu</span>}
+          </button>
+        </div>
 
         {!isCollapsed && (
           <div className="hidden border-t border-border px-4 py-3 md:block">
