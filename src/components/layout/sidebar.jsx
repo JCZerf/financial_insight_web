@@ -55,7 +55,7 @@ export function Sidebar({ className, isCollapsed, onToggle, currentPath = '/home
         <button
           type="button"
           onClick={onToggle}
-          className="absolute -right-3 top-24 hidden size-6 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-sm transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:flex"
+          className="absolute -right-3 top-12 hidden size-6 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-sm transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:flex"
           aria-label={isCollapsed ? 'Expandir menu' : 'Recolher menu'}
           title={isCollapsed ? 'Expandir menu' : 'Recolher menu'}
         >
