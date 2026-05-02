@@ -162,3 +162,11 @@ export async function updateUserProfile(data) {
     errorMessage: 'Erro ao atualizar perfil.',
   })
 }
+
+export async function runAdminIngestion(data) {
+  return requestApi('/api/admin/ingestion/run/', {
+    method: 'POST',
+    body: JSON.stringify(data),
+    errorMessage: 'Erro ao executar atualização dos dados.',
+  })
+}

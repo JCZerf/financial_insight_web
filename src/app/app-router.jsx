@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
 import { hasStoredAuthTokens } from '@/features/auth/lib/auth-client'
 import { AnalysisPage } from '@/pages/analysis/analysis-page'
+import { ComparePage } from '@/pages/compare/compare-page'
 import { HomePage } from '@/pages/home/home-page'
 import { FundDetailPage } from '@/pages/home/fund-detail-page'
 import { LoginPage } from '@/pages/login/login-page'
@@ -35,6 +36,14 @@ export function AppRouter() {
           element={(
             <PrivateRoute>
               <AnalysisPage />
+            </PrivateRoute>
+          )}
+        />
+        <Route
+          path="/comparador"
+          element={(
+            <PrivateRoute>
+              <ComparePage />
             </PrivateRoute>
           )}
         />

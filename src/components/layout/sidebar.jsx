@@ -1,7 +1,9 @@
-import { Home, LogOut, PanelLeftClose, PanelLeftOpen, SlidersHorizontal, User } from 'lucide-react'
+import { GitCompareArrows, Home, LogOut, PanelLeftClose, PanelLeftOpen, Settings, SlidersHorizontal, User } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { cn } from '@/lib/utils'
+import { fetchUserProfile } from '@/lib/api-client'
 import logo from '@/assets/financial_insight_logo.png'
 
 const navigationItems = [
@@ -18,6 +20,12 @@ const navigationItems = [
     icon: SlidersHorizontal,
   },
   {
+    label: 'Comparador',
+    title: 'Comparador de FIIs',
+    href: '/comparador',
+    icon: GitCompareArrows,
+  },
+  {
     label: 'Perfil',
     title: 'Perfil',
     href: '/perfil',
@@ -25,8 +33,41 @@ const navigationItems = [
   },
 ]
 
+const adminNavigationItems = [
+  {
+    label: 'Administração',
+    title: 'Administração',
+    href: '/administracao',
+    icon: Settings,
+  },
+]
+
 export function Sidebar({ className, isCollapsed, onToggle, currentPath = '/home' }) {
   const navigate = useNavigate()
+  const [isSuperuser, setIsSuperuser] = useState(false)
+
+  useEffect(() => {
+    let isActive = true
+
+    async function loadUser() {
+      try {
+        const data = await fetchUserProfile()
+        if (isActive) {
+          setIsSuperuser(Boolean(data.is_superuser))
+        }
+      } catch {
+        if (isActive) {
+          setIsSuperuser(false)
+        }
+      }
+    }
+
+    loadUser()
+
+    return () => {
+      isActive = false
+    }
+  }, [])
 
   function handleLogout() {
     localStorage.removeItem('access_token')
@@ -62,7 +103,7 @@ export function Sidebar({ className, isCollapsed, onToggle, currentPath = '/home
 
         <nav className="flex-1 overflow-y-auto px-2 py-3">
           <ul className="space-y-1">
-            {navigationItems.map((item) => {
+            {[...navigationItems, ...(isSuperuser ? adminNavigationItems : [])].map((item) => {
               const Icon = item.icon
               const isActive = currentPath === item.href
 

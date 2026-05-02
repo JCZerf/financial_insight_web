@@ -17,6 +17,7 @@ O tema visual possui suporte a modo claro e escuro. A preferencia e armazenada n
 | `/cadastro` | Cadastro | Funcional com validacoes locais e envio para a API. |
 | `/home` | Visao Geral | Resumo executivo dos principais FIIs com maior potencial, melhor oportunidade, cards de sintese e listas de leitura rapida. |
 | `/analise` | Analise de Fundos | Tela de triagem com filtros personalizados por segmento, rendimento minimo, preco/patrimonio maximo, liquidez minima e limite de itens. |
+| `/comparador` | Comparador de FIIs | Permite selecionar ate quatro fundos e comparar renda, preco/patrimonio, liquidez, valor de mercado, vacancia, imoveis e patrimonio lado a lado. |
 | `/home/fundo/:ticker` | Detalhe do Fundo | Exibe cotacao, leitura inicial, indicadores, mercado/liquidez, patrimonio, resultados financeiros e dados de imoveis. |
 | `/perfil` | Perfil | Permite consultar e atualizar dados do usuario autenticado. |
 | `*` | Fallback | Redireciona para `/login`. |
@@ -118,6 +119,7 @@ Na area autenticada, a navegacao principal usa menu lateral com:
 
 - link para Visao Geral;
 - link para Analise;
+- link para Comparador;
 - link para Perfil;
 - acao de sair da conta;
 - modo recolhido em desktop;
@@ -132,6 +134,8 @@ As telas autenticadas usam um cabecalho comum com:
 As telas de login e cadastro tambem disponibilizam alternancia de tema no topo do formulario.
 
 A Visao Geral tem foco em leitura rapida dos FIIs com maior potencial, evitando concentrar funcionalidades operacionais na mesma tela. A tela de Analise concentra os filtros personalizados e retorna apenas os fundos compativeis com os criterios informados. Quando nao ha resultados, a interface exibe estado vazio com mensagem orientativa.
+
+O Comparador permite selecionar de dois a quatro FIIs e apresenta uma tabela comparativa com destaque visual do melhor valor em cada criterio. A comparacao serve como apoio de triagem e nao representa recomendacao personalizada.
 
 ## Pontos pendentes
 
