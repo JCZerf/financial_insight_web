@@ -25,39 +25,46 @@ function formatNumber(value, decimals = 0) {
 
 function FundRow({ fund, showRank = false }) {
   return (
-    <div className="flex items-center justify-between border-b border-border py-3 last:border-0">
+    <div className="flex items-center gap-4 border-b border-border py-3.5 last:border-0 hover:bg-muted/30 transition-colors">
+      {showRank && fund.rank && (
+        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-sm font-bold text-primary">
+          {fund.rank}
+        </div>
+      )}
       <div className="flex-1">
-        <div className="flex items-center gap-2">
-          {showRank && fund.rank && (
-            <span className="flex size-6 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-              {fund.rank}
+        <div className="flex items-baseline gap-2">
+          <p className="text-base font-bold">{fund.ticker}</p>
+          {fund.segment && (
+            <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+              {fund.segment}
             </span>
           )}
-          <div>
-            <p className="font-semibold">{fund.ticker}</p>
-            {fund.name && (
-              <p className="text-xs text-muted-foreground">{fund.name}</p>
-            )}
-            {fund.segment && (
-              <span className="text-xs text-muted-foreground">{fund.segment}</span>
-            )}
-          </div>
         </div>
+        {fund.name && (
+          <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1">{fund.name}</p>
+        )}
       </div>
-      <div className="flex flex-col items-end gap-1 text-right">
-        <p className="font-semibold">{formatCurrency(fund.price)}</p>
-        <div className="flex gap-2 text-xs text-muted-foreground">
-          {fund.dividend_yield != null && (
-            <span className="text-green-600">
-              DY: {formatPercentage(fund.dividend_yield)}
-            </span>
-          )}
-          {fund.price_to_book != null && (
-            <span>
-              P/VP: {formatNumber(fund.price_to_book, 2)}
-            </span>
-          )}
+      <div className="flex items-center gap-4">
+        <div className="text-right">
+          <p className="text-xs text-muted-foreground">Preço</p>
+          <p className="text-sm font-bold">{formatCurrency(fund.price)}</p>
         </div>
+        {fund.dividend_yield != null && (
+          <div className="text-right">
+            <p className="text-xs text-muted-foreground">Rendimento</p>
+            <p className="text-sm font-bold text-green-600">
+              {formatPercentage(fund.dividend_yield)}
+            </p>
+          </div>
+        )}
+        {fund.price_to_book != null && (
+          <div className="text-right">
+            <p className="text-xs text-muted-foreground">P/VP</p>
+            <p className={`text-sm font-bold ${fund.price_to_book < 1 ? 'text-green-600' : 'text-foreground'}`}>
+              {formatNumber(fund.price_to_book, 2)}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )

@@ -80,25 +80,74 @@ export function HomePage() {
 
         {dashboard && !loading && (
           <>
-            <SummaryCards summary={dashboard.summary} />
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <BestOpportunityCard fund={dashboard.summary?.best_opportunity} />
-              
-              <div className="space-y-4">
-                <div className="rounded-lg border border-border bg-card p-4">
-                  <h3 className="mb-2 font-semibold">Informações do Dataset</h3>
-                  <div className="space-y-1 text-sm text-muted-foreground">
-                    <p>Total de fundos: {dashboard.metadata?.total_funds ?? 0}</p>
-                    <p>Fundos ranqueados: {dashboard.metadata?.ranked_funds ?? 0}</p>
-                    {dashboard.metadata?.latest_collected_at_utc && (
-                      <p className="text-xs">
-                        Última coleta:{' '}
-                        {new Date(dashboard.metadata.latest_collected_at_utc).toLocaleString('pt-BR')}
-                      </p>
-                    )}
-                  </div>
+            <div className="rounded-lg border border-primary/20 bg-primary/5 p-5">
+              <h2 className="mb-2.5 text-base font-semibold text-primary">
+                Como interpretar as métricas
+              </h2>
+              <div className="grid gap-2 text-sm md:grid-cols-3">
+                <div>
+                  <span className="font-semibold text-foreground">Rendimento:</span>
+                  <span className="ml-1 text-muted-foreground">Acima de 8%/ano é alto, 6-8% médio, abaixo de 6% baixo</span>
                 </div>
+                <div>
+                  <span className="font-semibold text-foreground">Preço/Valor (P/VP):</span>
+                  <span className="ml-1 text-muted-foreground">Abaixo de 1.0 = comprando com desconto</span>
+                </div>
+                <div>
+                  <span className="font-semibold text-foreground">Liquidez:</span>
+                  <span className="ml-1 text-muted-foreground">Acima de R$ 500mil/dia facilita negociação</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h2 className="mb-4 text-lg font-semibold text-foreground">
+                Visão Geral do Mercado
+              </h2>
+              <p className="mb-4 text-sm text-muted-foreground">
+                Médias e medianas dos {dashboard.metadata?.ranked_funds ?? 0} fundos analisados
+              </p>
+              <SummaryCards summary={dashboard.summary} />
+            </div>
+
+            <BestOpportunityCard fund={dashboard.summary?.best_opportunity} />
+
+            <div className="rounded-lg border border-border bg-card p-5">
+              <h3 className="mb-3 text-sm font-semibold text-foreground">
+                Informações da Base de Dados
+              </h3>
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Total de FIIs</span>
+                      <span className="text-sm font-semibold text-foreground">
+                        {dashboard.metadata?.total_funds ?? 0}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Fundos analisados</span>
+                      <span className="text-sm font-semibold text-foreground">
+                        {dashboard.metadata?.ranked_funds ?? 0}
+                      </span>
+                    </div>
+                    {dashboard.metadata?.latest_collected_at_utc && (
+                      <div className="mt-3 border-t border-border pt-2.5">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xs text-muted-foreground">Última atualização:</span>
+                          <span className="text-xs font-medium text-foreground">
+                            {new Date(dashboard.metadata.latest_collected_at_utc).toLocaleDateString('pt-BR', {
+                              day: '2-digit',
+                              month: '2-digit',
+                              year: 'numeric',
+                            })}
+                            {' às '}
+                            {new Date(dashboard.metadata.latest_collected_at_utc).toLocaleTimeString('pt-BR', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </span>
+                        </div>
+                      </div>
+                    )}
               </div>
             </div>
 
