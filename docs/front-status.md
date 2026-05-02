@@ -6,6 +6,8 @@ O frontend da Financial Insight possui fluxo autenticado funcional, telas de lei
 
 A aplicacao usa React, Vite, Tailwind CSS e componentes baseados em `shadcn/ui`. A identidade visual esta documentada em `docs/visual-identity.md`.
 
+O tema visual possui suporte a modo claro e escuro. A preferencia e armazenada no `localStorage` e aplicada pela classe `dark` no elemento raiz do documento.
+
 ## Rotas
 
 | Rota | Tela | Estado |
@@ -117,8 +119,11 @@ Na area autenticada, a navegacao principal usa menu lateral com:
 - link para Visao Geral;
 - link para Analise;
 - link para Perfil;
+- alternancia entre tema claro e escuro;
 - modo recolhido em desktop;
 - comportamento compacto em telas menores.
+
+As telas de login e cadastro tambem disponibilizam alternancia de tema no topo do formulario.
 
 A Visao Geral tem foco em leitura rapida dos FIIs com maior potencial, evitando concentrar funcionalidades operacionais na mesma tela. A tela de Analise concentra os filtros personalizados e retorna apenas os fundos compativeis com os criterios informados. Quando nao ha resultados, a interface exibe estado vazio com mensagem orientativa.
 
