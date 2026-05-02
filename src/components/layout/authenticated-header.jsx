@@ -1,9 +1,7 @@
-import { LogOut, UserCircle } from 'lucide-react'
+import { UserCircle } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 import { ThemeToggle } from '@/components/layout/theme-toggle'
-import { Button } from '@/components/ui/button'
 import { fetchUserProfile } from '@/lib/api-client'
 
 function getDisplayName(user) {
@@ -13,18 +11,11 @@ function getDisplayName(user) {
 }
 
 export function AuthenticatedHeader({ title, description, user: initialUser = null }) {
-  const navigate = useNavigate()
-  const [user, setUser] = useState(initialUser)
-
-  function handleLogout() {
-    localStorage.removeItem('access_token')
-    localStorage.removeItem('refresh_token')
-    navigate('/login', { replace: true })
-  }
+  const [loadedUser, setLoadedUser] = useState(null)
+  const user = initialUser ?? loadedUser
 
   useEffect(() => {
     if (initialUser) {
-      setUser(initialUser)
       return
     }
 
@@ -34,11 +25,11 @@ export function AuthenticatedHeader({ title, description, user: initialUser = nu
       try {
         const data = await fetchUserProfile()
         if (isActive) {
-          setUser(data)
+          setLoadedUser(data)
         }
       } catch {
         if (isActive) {
-          setUser(null)
+          setLoadedUser(null)
         }
       }
     }
@@ -60,7 +51,7 @@ export function AuthenticatedHeader({ title, description, user: initialUser = nu
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        <div className="flex min-w-0 items-center gap-2 rounded-lg border border-border bg-card px-3 py-2">
+        <div className="flex h-11 min-w-0 items-center gap-2 rounded-lg border border-border bg-card px-3">
           <UserCircle className="size-5 shrink-0 text-primary" />
           <div className="min-w-0">
             <p className="truncate text-sm font-medium">
@@ -72,19 +63,7 @@ export function AuthenticatedHeader({ title, description, user: initialUser = nu
           </div>
         </div>
 
-        <div className="rounded-lg border border-border bg-card">
-          <ThemeToggle isCollapsed />
-        </div>
-
-        <Button
-          type="button"
-          variant="outline"
-          className="w-fit rounded-lg"
-          onClick={handleLogout}
-        >
-          <LogOut className="size-4" />
-          Sair
-        </Button>
+        <ThemeToggle isCollapsed variant="header" />
       </div>
     </header>
   )

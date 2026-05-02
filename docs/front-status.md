@@ -119,9 +119,15 @@ Na area autenticada, a navegacao principal usa menu lateral com:
 - link para Visao Geral;
 - link para Analise;
 - link para Perfil;
-- alternancia entre tema claro e escuro;
+- acao de sair da conta;
 - modo recolhido em desktop;
 - comportamento compacto em telas menores.
+
+As telas autenticadas usam um cabecalho comum com:
+
+- identificacao do usuario logado por nome e email;
+- alternancia entre tema claro e escuro;
+- titulo e descricao contextual da tela.
 
 As telas de login e cadastro tambem disponibilizam alternancia de tema no topo do formulario.
 

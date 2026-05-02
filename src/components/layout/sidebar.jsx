@@ -1,5 +1,5 @@
-import { Home, PanelLeftClose, PanelLeftOpen, SlidersHorizontal, User } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Home, LogOut, PanelLeftClose, PanelLeftOpen, SlidersHorizontal, User } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { cn } from '@/lib/utils'
 import logo from '@/assets/financial_insight_logo.png'
@@ -26,6 +26,14 @@ const navigationItems = [
 ]
 
 export function Sidebar({ className, isCollapsed, onToggle, currentPath = '/home' }) {
+  const navigate = useNavigate()
+
+  function handleLogout() {
+    localStorage.removeItem('access_token')
+    localStorage.removeItem('refresh_token')
+    navigate('/login', { replace: true })
+  }
+
   return (
     <aside
       className={cn(
@@ -81,12 +89,26 @@ export function Sidebar({ className, isCollapsed, onToggle, currentPath = '/home
           </ul>
         </nav>
 
-        <div className="hidden border-t border-border px-2 py-2 md:block">
+        <div className="space-y-1 border-t border-border px-2 py-2">
+          <button
+            type="button"
+            onClick={handleLogout}
+            className={cn(
+              'flex w-full items-center rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+              isCollapsed ? 'justify-center' : 'justify-center md:justify-start md:gap-3'
+            )}
+            aria-label="Sair da conta"
+            title="Sair"
+          >
+            <LogOut className="size-5 shrink-0" />
+            {!isCollapsed && <span className="hidden md:inline">Sair</span>}
+          </button>
+
           <button
             type="button"
             onClick={onToggle}
             className={cn(
-              'flex w-full items-center rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+              'hidden w-full items-center rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:flex',
               isCollapsed ? 'justify-center' : 'gap-3'
             )}
             aria-label={isCollapsed ? 'Expandir menu' : 'Recolher menu'}

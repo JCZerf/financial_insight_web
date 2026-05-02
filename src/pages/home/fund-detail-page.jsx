@@ -6,6 +6,7 @@ import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Sidebar } from '@/components/layout/sidebar'
+import { AuthenticatedHeader } from '@/components/layout/authenticated-header'
 import { fetchFundDetail } from '@/lib/api-client'
 import { cn } from '@/lib/utils'
 
@@ -191,7 +192,12 @@ export function FundDetailPage() {
         sidebarCollapsed ? 'ml-16' : 'ml-16 md:ml-64'
       )}>
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-5">
-          <header className="flex flex-col gap-3 border-b border-border pb-3">
+          <AuthenticatedHeader
+            title={ticker?.toUpperCase() ?? 'Detalhe do Fundo'}
+            description="Análise detalhada do fundo imobiliário selecionado"
+          />
+
+          <div className="flex flex-col gap-3">
             <Button
               type="button"
               variant="ghost"
@@ -201,7 +207,7 @@ export function FundDetailPage() {
               <ArrowLeft className="size-4" />
               Voltar para Visão Geral
             </Button>
-          </header>
+          </div>
 
           {loading && (
             <div className="flex items-center justify-center py-12">
