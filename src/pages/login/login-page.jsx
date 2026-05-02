@@ -25,7 +25,7 @@ export function LoginPage() {
 
   return (
     <AuthShell
-      eyebrow="Financial Insight"
+      eyebrow=""
       title="Seu radar visual para encontrar oportunidades e construir renda passiva."
       description="A Financial Insight transforma dados publicos do mercado em uma leitura simples, visual e orientada a decisao para quem quer investir com mais criterio e menos friccao."
       currentView="login"

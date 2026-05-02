@@ -46,9 +46,11 @@ export function AuthShell({
               </div>
             ) : null}
 
-            <span className="inline-flex w-fit items-center rounded-full border border-white/18 bg-white/10 px-4 py-1 text-xs font-semibold tracking-[0.28em] uppercase text-white/90">
-              {eyebrow}
-            </span>
+            {eyebrow ? (
+              <span className="inline-flex w-fit items-center rounded-full border border-white/18 bg-white/10 px-4 py-1 text-xs font-semibold tracking-[0.28em] uppercase text-white/90">
+                {eyebrow}
+              </span>
+            ) : null}
 
             <div className="max-w-2xl space-y-4">
               <h1 className="text-4xl leading-none font-semibold text-balance sm:text-5xl lg:text-6xl">
