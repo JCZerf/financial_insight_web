@@ -13,6 +13,12 @@ import { SummaryCards } from '@/components/dashboard/summary-cards'
 import { fetchDashboard } from '@/lib/api-client'
 import { cn } from '@/lib/utils'
 
+function cleanFilters(filters) {
+  return Object.fromEntries(
+    Object.entries(filters).filter(([, value]) => value !== '' && value != null)
+  )
+}
+
 export function HomePage() {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
@@ -27,20 +33,32 @@ export function HomePage() {
   }
 
   useEffect(() => {
-    async function loadDashboard() {
+    let isActive = true
+
+    async function loadInitialDashboard() {
       try {
         setLoading(true)
         setError(null)
-        const data = await fetchDashboard()
-        setDashboard(data)
+        const data = await fetchDashboard(cleanFilters({ limit: '10' }))
+        if (isActive) {
+          setDashboard(data)
+        }
       } catch (err) {
-        setError(err.message)
+        if (isActive) {
+          setError(err.message)
+        }
       } finally {
-        setLoading(false)
+        if (isActive) {
+          setLoading(false)
+        }
       }
     }
 
-    loadDashboard()
+    loadInitialDashboard()
+
+    return () => {
+      isActive = false
+    }
   }, [])
 
   return (
@@ -53,7 +71,7 @@ export function HomePage() {
       
       <main className={cn(
         'flex-1 px-3 py-4 text-foreground transition-all duration-300 sm:px-4',
-        sidebarCollapsed ? 'ml-16' : 'ml-64'
+        sidebarCollapsed ? 'ml-16' : 'ml-16 md:ml-64'
       )}>
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-5">
           <header className="flex flex-col gap-3 border-b border-border pb-3 sm:flex-row sm:items-center sm:justify-between">
@@ -75,7 +93,7 @@ export function HomePage() {
             </Button>
           </header>
 
-        {loading && (
+        {loading && !dashboard && (
           <div className="flex items-center justify-center py-12">
             <p className="text-muted-foreground">Carregando dados...</p>
           </div>
@@ -87,14 +105,14 @@ export function HomePage() {
           </Alert>
         )}
 
-        {dashboard && !loading && (
+        {dashboard && (
           <>
             <div>
               <h2 className="mb-4 text-lg font-semibold text-foreground">
                 Visão Geral do Mercado
               </h2>
               <p className="mb-4 text-sm text-muted-foreground">
-                Análise consolidada de {dashboard.metadata?.ranked_funds ?? 0} fundos imobiliários
+                Resumo dos principais fundos imobiliários com maior potencial entre {dashboard.metadata?.ranked_funds ?? 0} FIIs analisados
               </p>
               <SummaryCards summary={dashboard.summary} />
             </div>

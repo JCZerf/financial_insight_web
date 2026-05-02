@@ -19,8 +19,13 @@ function formatCurrency(value) {
 
 function formatPercentage(value, decimals = 2) {
   if (value == null) return '—'
-  const formatted = value.toFixed(decimals)
-  return value > 0 ? `+${formatted}%` : `${formatted}%`
+  return `${value.toFixed(decimals)}%`
+}
+
+function formatSignedPercentage(value, decimals = 2) {
+  if (value == null) return '—'
+  const formatted = formatPercentage(value, decimals)
+  return value > 0 ? `+${formatted}` : formatted
 }
 
 function formatNumber(value, decimals = 0) {
@@ -48,11 +53,57 @@ function formatCompactCurrency(value) {
 
 function MetricItem({ label, value, className = '', highlight = false }) {
   return (
-    <div className={cn('flex flex-col gap-1', className)}>
+    <div className={cn('flex min-w-0 flex-col gap-1 rounded-lg bg-muted/30 p-3', className)}>
       <p className="text-xs text-muted-foreground">{label}</p>
-      <p className={cn('text-lg font-bold', highlight && 'text-primary')}>{value}</p>
+      <p className={cn('break-words text-lg font-bold', highlight && 'text-primary')}>{value}</p>
     </div>
   )
+}
+
+function ReadingCard({ label, value, description, tone = 'default' }) {
+  return (
+    <div className={cn(
+      'rounded-lg border p-4',
+      tone === 'positive' && 'border-green-500/30 bg-green-500/10',
+      tone === 'warning' && 'border-amber-500/30 bg-amber-500/10',
+      tone === 'neutral' && 'border-blue-500/30 bg-blue-500/10',
+      tone === 'default' && 'border-border bg-card'
+    )}>
+      <p className="text-xs font-medium text-muted-foreground">{label}</p>
+      <p className={cn(
+        'mt-1 text-2xl font-bold',
+        tone === 'positive' && 'text-green-700 dark:text-green-400',
+        tone === 'warning' && 'text-amber-700 dark:text-amber-400',
+        tone === 'neutral' && 'text-blue-700 dark:text-blue-400'
+      )}>
+        {value}
+      </p>
+      {description && (
+        <p className="mt-1 text-xs text-muted-foreground">{description}</p>
+      )}
+    </div>
+  )
+}
+
+function getYieldReading(value) {
+  if (value == null) return { text: 'Sem leitura', tone: 'default' }
+  if (value >= 8) return { text: 'Renda elevada', tone: 'positive' }
+  if (value >= 6) return { text: 'Renda moderada', tone: 'neutral' }
+  return { text: 'Renda baixa', tone: 'warning' }
+}
+
+function getPriceReading(value) {
+  if (value == null) return { text: 'Sem leitura', tone: 'default' }
+  if (value < 0.95) return { text: 'Abaixo do patrimônio', tone: 'positive' }
+  if (value <= 1.05) return { text: 'Próximo ao patrimônio', tone: 'neutral' }
+  return { text: 'Acima do patrimônio', tone: 'warning' }
+}
+
+function getLiquidityReading(value) {
+  if (value == null) return { text: 'Sem leitura', tone: 'default' }
+  if (value >= 500_000) return { text: 'Alta liquidez', tone: 'positive' }
+  if (value >= 100_000) return { text: 'Liquidez moderada', tone: 'neutral' }
+  return { text: 'Baixa liquidez', tone: 'warning' }
 }
 
 function OscillationBadge({ label, value }) {
@@ -74,7 +125,7 @@ function OscillationBadge({ label, value }) {
         isPositive && 'text-green-600',
         isNegative && 'text-red-600'
       )}>
-        {formatPercentage(value)}
+        {formatSignedPercentage(value)}
       </p>
     </div>
   )
@@ -101,6 +152,12 @@ export function FundDetailPage() {
   const [error, setError] = useState(null)
   const [fund, setFund] = useState(null)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const dividendYield = fund?.detail?.indicators?.dividend_yield ?? fund?.dividend_yield
+  const priceToBook = fund?.detail?.indicators?.price_to_book ?? fund?.price_to_book
+  const liquidity = fund?.detail?.market?.avg_volume_2m ?? fund?.liquidity
+  const yieldReading = getYieldReading(dividendYield)
+  const priceReading = getPriceReading(priceToBook)
+  const liquidityReading = getLiquidityReading(liquidity)
 
   useEffect(() => {
     async function loadFundDetail() {
@@ -131,7 +188,7 @@ export function FundDetailPage() {
       
       <main className={cn(
         'flex-1 px-3 py-4 text-foreground transition-all duration-300 sm:px-4',
-        sidebarCollapsed ? 'ml-16' : 'ml-64'
+        sidebarCollapsed ? 'ml-16' : 'ml-16 md:ml-64'
       )}>
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-5">
           <header className="flex flex-col gap-3 border-b border-border pb-3">
@@ -142,7 +199,7 @@ export function FundDetailPage() {
               onClick={() => navigate('/home')}
             >
               <ArrowLeft className="size-4" />
-              Voltar ao Dashboard
+              Voltar para Visão Geral
             </Button>
           </header>
 
@@ -160,39 +217,67 @@ export function FundDetailPage() {
 
           {fund && !loading && (
             <>
-              {/* Cabeçalho do Fundo */}
               <div className="flex flex-col gap-4">
-                <div>
-                  <div className="flex items-center gap-3">
-                    <h1 className="text-3xl font-bold">{fund.ticker}</h1>
-                    {fund.segment && (
-                      <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
-                        {fund.segment}
-                      </span>
-                    )}
+                <div className="rounded-lg border border-border bg-card p-4">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-3">
+                        <h1 className="text-3xl font-bold">{fund.ticker}</h1>
+                        {fund.segment && (
+                          <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+                            {fund.segment}
+                          </span>
+                        )}
+                      </div>
+                      {fund.name && (
+                        <p className="mt-2 text-muted-foreground">{fund.name}</p>
+                      )}
+                      {fund.detail?.identification?.management && (
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          Gestão: {fund.detail.identification.management}
+                        </p>
+                      )}
+                    </div>
+                    <div className="rounded-lg bg-muted/50 p-4 sm:min-w-56 sm:text-right">
+                      <p className="text-sm text-muted-foreground">Cotação Atual</p>
+                      <p className="mt-1 text-3xl font-bold">{formatCurrency(fund.price)}</p>
+                      {fund.detail?.market?.last_quote_date && (
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          Última cotação: {fund.detail.market.last_quote_date}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  {fund.name && (
-                    <p className="mt-2 text-muted-foreground">{fund.name}</p>
-                  )}
-                  {fund.detail?.identification?.management && (
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      Gestão: {fund.detail.identification.management}
-                    </p>
-                  )}
                 </div>
 
-                {/* Preço Principal e Oscilações */}
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="rounded-lg bg-muted/50 p-4">
-                    <p className="text-sm text-muted-foreground">Cotação Atual</p>
-                    <p className="mt-1 text-4xl font-bold">{formatCurrency(fund.price)}</p>
-                    {fund.detail?.market?.last_quote_date && (
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        Última cotação: {fund.detail.market.last_quote_date}
-                      </p>
-                    )}
-                  </div>
+                <div className="grid gap-3 md:grid-cols-3">
+                  <ReadingCard
+                    label="Renda"
+                    value={formatPercentage(dividendYield)}
+                    description={yieldReading.text}
+                    tone={yieldReading.tone}
+                  />
+                  <ReadingCard
+                    label="Preço em relação ao patrimônio"
+                    value={formatNumber(priceToBook, 2)}
+                    description={priceReading.text}
+                    tone={priceReading.tone}
+                  />
+                  <ReadingCard
+                    label="Facilidade para negociar"
+                    value={formatCompactCurrency(liquidity)}
+                    description={liquidityReading.text}
+                    tone={liquidityReading.tone}
+                  />
+                </div>
 
+                <div className="grid gap-4 md:grid-cols-[1fr_1.2fr]">
+                  <div className="rounded-lg border border-border bg-card p-4">
+                    <p className="text-sm font-medium text-foreground">Leitura do ativo</p>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                      Esta página consolida preço, renda, patrimônio, liquidez e informações operacionais do fundo para apoiar uma análise objetiva.
+                    </p>
+                  </div>
                   {fund.detail?.market?.oscillations && (
                     <div className="grid grid-cols-2 gap-2">
                       <OscillationBadge label="Dia" value={fund.detail.market.oscillations.day} />
@@ -204,29 +289,28 @@ export function FundDetailPage() {
                 </div>
               </div>
 
-              {/* Indicadores Principais */}
-              <InfoSection title="Indicadores de Rentabilidade" icon={TrendingUp}>
+              <InfoSection title="Renda e Preço" icon={TrendingUp}>
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
                   <MetricItem
-                    label="Dividend Yield"
-                    value={formatPercentage(fund.detail?.indicators?.dividend_yield ?? fund.dividend_yield, 2)}
+                    label="Rendimento anual"
+                    value={formatPercentage(dividendYield, 2)}
                     highlight={true}
                   />
                   <MetricItem
-                    label="FFO Yield"
+                    label="Resultado operacional sobre preço"
                     value={formatPercentage(fund.detail?.indicators?.ffo_yield, 2)}
                   />
                   <MetricItem
-                    label="P/VP"
-                    value={formatNumber(fund.detail?.indicators?.price_to_book ?? fund.price_to_book, 2)}
-                    highlight={fund.price_to_book < 1}
+                    label="Preço vs patrimônio"
+                    value={formatNumber(priceToBook, 2)}
+                    highlight={priceToBook < 1}
                   />
                   <MetricItem
                     label="Dividendo por Cota"
                     value={formatCurrency(fund.detail?.indicators?.dividend_per_share)}
                   />
                   <MetricItem
-                    label="FFO por Cota"
+                    label="Resultado por Cota"
                     value={formatCurrency(fund.detail?.indicators?.ffo_per_share)}
                   />
                   <MetricItem
@@ -249,11 +333,11 @@ export function FundDetailPage() {
                       value={formatCompactCurrency(fund.detail.results.last_3m_revenue)}
                     />
                     <MetricItem
-                      label="FFO (12M)"
+                      label="Resultado operacional (12M)"
                       value={formatCompactCurrency(fund.detail.results.last_12m_ffo)}
                     />
                     <MetricItem
-                      label="FFO (3M)"
+                      label="Resultado operacional (3M)"
                       value={formatCompactCurrency(fund.detail.results.last_3m_ffo)}
                     />
                     <MetricItem
@@ -276,7 +360,7 @@ export function FundDetailPage() {
                     value={formatCompactCurrency(fund.detail?.market?.market_value ?? fund.market_value)}
                   />
                   <MetricItem
-                    label="Volume Médio (2M)"
+                    label="Volume Médio Diário"
                     value={formatCompactCurrency(fund.detail?.market?.avg_volume_2m)}
                   />
                   <MetricItem
@@ -296,7 +380,7 @@ export function FundDetailPage() {
 
               {/* Patrimônio */}
               {fund.detail?.balance_sheet && (
-                <InfoSection title="Balanço Patrimonial" icon={DollarSign}>
+                <InfoSection title="Patrimônio" icon={DollarSign}>
                   <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                     <MetricItem
                       label="Patrimônio Líquido"
@@ -318,7 +402,7 @@ export function FundDetailPage() {
 
               {/* Propriedades */}
               {fund.detail?.properties && (
-                <InfoSection title="Informações de Propriedades" icon={Building2}>
+                <InfoSection title="Imóveis e Ocupação" icon={Building2}>
                   <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
                     <MetricItem
                       label="Nº de Imóveis"
@@ -341,7 +425,7 @@ export function FundDetailPage() {
                       value={formatCurrency(fund.detail.properties.rent_per_sqm)}
                     />
                     <MetricItem
-                      label="Cap Rate"
+                      label="Retorno dos Imóveis"
                       value={fund.detail.properties.cap_rate != null ? formatPercentage(fund.detail.properties.cap_rate) : '—'}
                     />
                     <MetricItem
@@ -349,7 +433,7 @@ export function FundDetailPage() {
                       value={fund.detail.properties.avg_vacancy != null ? formatPercentage(fund.detail.properties.avg_vacancy) : '—'}
                     />
                     <MetricItem
-                      label="% do Patrimônio"
+                      label="Participação no Patrimônio"
                       value={fund.detail.properties.to_equity_percent != null ? formatPercentage(fund.detail.properties.to_equity_percent) : '—'}
                     />
                   </div>
@@ -358,7 +442,7 @@ export function FundDetailPage() {
 
               {/* Histórico de Oscilações Anuais */}
               {fund.detail?.market?.oscillations?.yearly && (
-                <InfoSection title="Performance Anual" icon={Calendar}>
+                <InfoSection title="Variação Anual" icon={Calendar}>
                   <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
                     {Object.entries(fund.detail.market.oscillations.yearly)
                       .sort(([a], [b]) => b.localeCompare(a))

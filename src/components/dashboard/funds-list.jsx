@@ -89,11 +89,14 @@ function FundRow({ fund, showRank = false }) {
   )
 }
 
-export function FundsList({ title, description, funds, icon: Icon, showRank = false }) {
-  if (!funds || funds.length === 0) {
-    return null
-  }
-
+export function FundsList({
+  title,
+  description,
+  funds,
+  icon: Icon,
+  showRank = false,
+  emptyMessage = 'Nenhum fundo encontrado para os critérios informados.',
+}) {
   return (
     <Card>
       <CardHeader>
@@ -108,11 +111,18 @@ export function FundsList({ title, description, funds, icon: Icon, showRank = fa
         </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-0">
-          {funds.map((fund) => (
-            <FundRow key={fund.ticker} fund={fund} showRank={showRank} />
-          ))}
-        </div>
+        {funds?.length > 0 ? (
+          <div className="space-y-0">
+            {funds.map((fund) => (
+              <FundRow key={fund.ticker} fund={fund} showRank={showRank} />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-lg border border-dashed border-border bg-muted/30 px-4 py-8 text-center">
+            <p className="text-sm font-medium text-foreground">Nenhum resultado encontrado</p>
+            <p className="mt-1 text-sm text-muted-foreground">{emptyMessage}</p>
+          </div>
+        )}
       </CardContent>
     </Card>
   )

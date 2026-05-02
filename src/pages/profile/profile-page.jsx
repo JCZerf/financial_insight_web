@@ -106,7 +106,7 @@ export function ProfilePage() {
       
       <main className={cn(
         'flex-1 px-3 py-4 text-foreground transition-all duration-300 sm:px-4',
-        sidebarCollapsed ? 'ml-16' : 'ml-64'
+        sidebarCollapsed ? 'ml-16' : 'ml-16 md:ml-64'
       )}>
         <div className="mx-auto flex w-full max-w-4xl flex-col gap-5">
           <header className="flex flex-col gap-3 border-b border-border pb-3 sm:flex-row sm:items-center sm:justify-between">
