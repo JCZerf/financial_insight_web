@@ -1,6 +1,8 @@
 import { ArrowUpRight, BadgeCheck, BarChart3 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
+import { ThemeToggle } from '@/components/layout/theme-toggle'
+
 const previewRows = [
   { label: 'Dividend yield', value: '8,74%', tone: 'text-financial-positive' },
   { label: 'P/VP medio', value: '0,91', tone: 'text-white' },
@@ -17,7 +19,7 @@ export function AuthShell({
   children,
 }) {
   return (
-    <main className="grid min-h-screen overflow-x-hidden bg-[linear-gradient(180deg,#fbfcfd_0%,#f6f8fa_100%)] lg:h-screen lg:min-h-0 lg:overflow-hidden lg:grid-cols-[minmax(24rem,0.82fr)_minmax(34rem,1.18fr)]">
+    <main className="grid min-h-screen overflow-x-hidden bg-background lg:h-screen lg:min-h-0 lg:overflow-hidden lg:grid-cols-[minmax(24rem,0.82fr)_minmax(34rem,1.18fr)]">
       <section className="relative max-w-full overflow-hidden bg-[#0f1117] px-6 py-8 text-white sm:px-10 lg:px-12 xl:px-14">
         <div className="absolute inset-y-0 right-0 w-px bg-white/10" />
         <div className="absolute inset-0 bg-[linear-gradient(165deg,rgba(0,137,123,0.18)_0%,transparent_46%),linear-gradient(0deg,rgba(0,137,123,0.22),transparent_34%)]" />
@@ -98,7 +100,8 @@ export function AuthShell({
               </p>
             </div>
 
-            <nav className="flex w-fit items-center gap-2 rounded-full border border-border bg-white p-1.5 shadow-[0_12px_30px_rgba(15,17,23,0.06)]">
+            <div className="flex flex-wrap items-center gap-2">
+              <nav className="flex w-fit items-center gap-2 rounded-full border border-border bg-card p-1.5 shadow-[0_12px_30px_rgba(15,17,23,0.06)]">
               <Link
                 to="/login"
                 className={`rounded-full px-4 py-2 text-sm font-medium transition ${
@@ -119,7 +122,12 @@ export function AuthShell({
               >
                 Cadastro
               </Link>
-            </nav>
+              </nav>
+
+              <div className="w-fit rounded-full border border-border bg-card p-1.5 shadow-[0_12px_30px_rgba(15,17,23,0.06)]">
+                <ThemeToggle isCollapsed />
+              </div>
+            </div>
           </div>
 
           {children}
