@@ -165,15 +165,19 @@ export function ComparePage() {
 
   const filteredOptions = useMemo(() => {
     const normalizedQuery = query.trim().toUpperCase()
-    if (!normalizedQuery) return options.slice(0, 8)
+    const selectedTickers = new Set(selectedFunds.map((fund) => fund.ticker))
+    const availableOptions = options.filter((fund) => !selectedTickers.has(fund.ticker))
 
-    return options
+    if (!normalizedQuery) return availableOptions.slice(0, 20)
+
+    return availableOptions
       .filter((fund) => (
-        fund.ticker?.includes(normalizedQuery)
+        fund.ticker?.toUpperCase().includes(normalizedQuery)
         || fund.name?.toUpperCase().includes(normalizedQuery)
+        || fund.segment?.toUpperCase().includes(normalizedQuery)
       ))
-      .slice(0, 8)
-  }, [options, query])
+      .slice(0, 30)
+  }, [options, query, selectedFunds])
 
   async function addFund(tickerValue = query) {
     const ticker = tickerValue.trim().toUpperCase()
@@ -254,9 +258,10 @@ export function ComparePage() {
                   <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     value={query}
-                    onChange={(event) => setQuery(event.target.value.toUpperCase())}
-                    placeholder="Digite o ticker do FII. Ex.: HGLG11"
-                    className="pl-9 uppercase"
+                    onChange={(event) => setQuery(event.target.value)}
+                    placeholder="Busque por ticker ou nome do fundo"
+                    autoComplete="off"
+                    className="pl-9"
                   />
                 </div>
                 <Button type="submit" disabled={adding || selectedFunds.length >= MAX_FUNDS}>
@@ -265,21 +270,59 @@ export function ComparePage() {
                 </Button>
               </form>
 
-              <div className="flex flex-wrap gap-2">
-                {loadingOptions ? (
-                  <p className="text-sm text-muted-foreground">Carregando sugestões...</p>
-                ) : (
-                  filteredOptions.map((fund) => (
-                    <button
-                      key={fund.ticker}
-                      type="button"
-                      onClick={() => addFund(fund.ticker)}
-                      className="rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                    >
-                      {fund.ticker}
-                    </button>
-                  ))
-                )}
+              <div className="overflow-hidden rounded-lg border border-border bg-background">
+                <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Fundos disponíveis</p>
+                    <p className="text-xs text-muted-foreground">
+                      Pesquise pelo ticker, nome ou segmento e selecione um fundo para comparar.
+                    </p>
+                  </div>
+                  {!loadingOptions && (
+                    <span className="shrink-0 text-xs text-muted-foreground">
+                      {filteredOptions.length} opções
+                    </span>
+                  )}
+                </div>
+
+                <div className="max-h-72 overflow-y-auto">
+                  {loadingOptions ? (
+                    <div className="px-4 py-5 text-sm text-muted-foreground">
+                      Carregando fundos...
+                    </div>
+                  ) : filteredOptions.length > 0 ? (
+                    filteredOptions.map((fund) => (
+                      <button
+                        key={fund.ticker}
+                        type="button"
+                        onClick={() => addFund(fund.ticker)}
+                        disabled={adding || selectedFunds.length >= MAX_FUNDS}
+                        className="flex w-full items-start justify-between gap-4 border-b border-border px-4 py-3 text-left transition-colors last:border-b-0 hover:bg-muted/60 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        <span className="min-w-0">
+                          <span className="flex flex-wrap items-center gap-2">
+                            <span className="text-sm font-semibold text-primary">{fund.ticker}</span>
+                            {fund.segment && (
+                              <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                                {fund.segment}
+                              </span>
+                            )}
+                          </span>
+                          {fund.name && (
+                            <span className="mt-1 block truncate text-sm text-foreground">
+                              {fund.name}
+                            </span>
+                          )}
+                        </span>
+                        <Plus className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+                      </button>
+                    ))
+                  ) : (
+                    <div className="px-4 py-5 text-sm text-muted-foreground">
+                      Nenhum fundo encontrado para os critérios informados.
+                    </div>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>

@@ -18,6 +18,7 @@ O tema visual possui suporte a modo claro e escuro. A preferencia e armazenada n
 | `/home` | Visao Geral | Resumo executivo dos principais FIIs com maior potencial, melhor oportunidade, cards de sintese e listas de leitura rapida. |
 | `/analise` | Analise de Fundos | Tela de triagem com filtros personalizados por segmento, rendimento minimo, preco/patrimonio maximo, liquidez minima e limite de itens. |
 | `/comparador` | Comparador de FIIs | Permite selecionar ate quatro fundos e comparar renda, preco/patrimonio, liquidez, valor de mercado, vacancia, imoveis e patrimonio lado a lado. |
+| `/administracao` | Administracao | Area restrita a superusuarios para execucao manual da coleta simples ou detalhada dos FIIs. |
 | `/home/fundo/:ticker` | Detalhe do Fundo | Exibe cotacao, leitura inicial, indicadores, mercado/liquidez, patrimonio, resultados financeiros e dados de imoveis. |
 | `/perfil` | Perfil | Permite consultar e atualizar dados do usuario autenticado. |
 | `*` | Fallback | Redireciona para `/login`. |
@@ -121,6 +122,7 @@ Na area autenticada, a navegacao principal usa menu lateral com:
 - link para Analise;
 - link para Comparador;
 - link para Perfil;
+- link para Administracao quando o usuario autenticado e superusuario;
 - acao de sair da conta;
 - modo recolhido em desktop;
 - comportamento compacto em telas menores.
@@ -136,6 +138,11 @@ As telas de login e cadastro tambem disponibilizam alternancia de tema no topo d
 A Visao Geral tem foco em leitura rapida dos FIIs com maior potencial, evitando concentrar funcionalidades operacionais na mesma tela. A tela de Analise concentra os filtros personalizados e retorna apenas os fundos compativeis com os criterios informados. Quando nao ha resultados, a interface exibe estado vazio com mensagem orientativa.
 
 O Comparador permite selecionar de dois a quatro FIIs e apresenta uma tabela comparativa com destaque visual do melhor valor em cada criterio. A comparacao serve como apoio de triagem e nao representa recomendacao personalizada.
+
+A area de Administracao e exibida apenas para superusuarios e permite executar manualmente a atualizacao dos dados:
+
+- extracao simples: dados gerais da tabela de FIIs;
+- extracao com detalhes: dados gerais e paginas detalhadas de cada fundo.
 
 ## Pontos pendentes
 
