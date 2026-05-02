@@ -119,32 +119,58 @@ export function BestOpportunityCard({ fund }) {
             <p className="mt-0.5 text-xs text-muted-foreground">ao ano</p>
           </div>
 
-          <div className="rounded-lg border border-blue-500/20 bg-blue-500/5 p-3">
-            <div className="flex items-center gap-1.5">
-              <TrendingUp className="size-3.5 text-blue-600 dark:text-blue-400" />
-              <p className="text-xs font-medium text-muted-foreground">Preço/valor</p>
+          {fund.ffo_yield != null ? (
+            <div className="rounded-lg border border-purple-500/20 bg-purple-500/5 p-3">
+              <div className="flex items-center gap-1.5">
+                <TrendingUp className="size-3.5 text-purple-600 dark:text-purple-400" />
+                <p className="text-xs font-medium text-muted-foreground">Renda Operacional</p>
+              </div>
+              <p className="mt-1.5 text-xl font-bold text-purple-600 dark:text-purple-400">
+                {formatPercentage(fund.ffo_yield)}
+              </p>
+              <p className="mt-0.5 text-xs text-muted-foreground">gerada pelo fundo</p>
             </div>
-            <p className="mt-1.5 text-xl font-bold text-blue-600 dark:text-blue-400">
-              {formatNumber(fund.price_to_book, 2)}
-            </p>
-            <p className="mt-0.5 text-xs text-muted-foreground">
-              {fund.price_to_book < 1 ? 'mais barato que o patrimônio' : 'perto ou acima do patrimônio'}
-            </p>
-          </div>
+          ) : (
+            <div className="rounded-lg border border-blue-500/20 bg-blue-500/5 p-3">
+              <div className="flex items-center gap-1.5">
+                <TrendingUp className="size-3.5 text-blue-600 dark:text-blue-400" />
+                <p className="text-xs font-medium text-muted-foreground">Preço/valor</p>
+              </div>
+              <p className="mt-1.5 text-xl font-bold text-blue-600 dark:text-blue-400">
+                {formatNumber(fund.price_to_book, 2)}
+              </p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                {fund.price_to_book < 1 ? 'mais barato que o patrimônio' : 'perto ou acima do patrimônio'}
+              </p>
+            </div>
+          )}
 
-          <div className="rounded-lg border border-cyan-500/20 bg-cyan-500/5 p-3">
-            <div className="flex items-center gap-1.5">
-              <TrendingUp className="size-3.5 text-cyan-600 dark:text-cyan-400" />
-              <p className="text-xs font-medium text-muted-foreground">Liquidez</p>
+          {fund.cap_rate != null ? (
+            <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-3">
+              <div className="flex items-center gap-1.5">
+                <TrendingUp className="size-3.5 text-amber-600 dark:text-amber-400" />
+                <p className="text-xs font-medium text-muted-foreground">Retorno Anual</p>
+              </div>
+              <p className="mt-1.5 text-xl font-bold text-amber-600 dark:text-amber-400">
+                {formatPercentage(fund.cap_rate)}
+              </p>
+              <p className="mt-0.5 text-xs text-muted-foreground">dos imóveis</p>
             </div>
-            <p className="mt-1.5 text-lg font-bold text-cyan-600 dark:text-cyan-400">
-              {formatCurrency(fund.liquidity)}
-            </p>
-            <p className="mt-0.5 text-xs text-muted-foreground">negociados por dia</p>
-          </div>
+          ) : (
+            <div className="rounded-lg border border-cyan-500/20 bg-cyan-500/5 p-3">
+              <div className="flex items-center gap-1.5">
+                <TrendingUp className="size-3.5 text-cyan-600 dark:text-cyan-400" />
+                <p className="text-xs font-medium text-muted-foreground">Liquidez</p>
+              </div>
+              <p className="mt-1.5 text-lg font-bold text-cyan-600 dark:text-cyan-400">
+                {formatCurrency(fund.liquidity)}
+              </p>
+              <p className="mt-0.5 text-xs text-muted-foreground">negociados por dia</p>
+            </div>
+          )}
         </div>
 
-        {(fund.property_count != null || fund.avg_vacancy != null) && (
+        {(fund.property_count != null || fund.avg_vacancy != null || fund.price_per_sqm != null || fund.rent_per_sqm != null) && (
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
             {fund.property_count != null && (
               <div className="flex items-center gap-1.5">
@@ -154,6 +180,12 @@ export function BestOpportunityCard({ fund }) {
             )}
             {fund.avg_vacancy != null && (
               <span>Vacância: {formatPercentage(fund.avg_vacancy)}</span>
+            )}
+            {fund.price_per_sqm != null && (
+              <span>Preço/m²: {formatCurrency(fund.price_per_sqm)}</span>
+            )}
+            {fund.rent_per_sqm != null && (
+              <span>Aluguel/m²: {formatCurrency(fund.rent_per_sqm)}</span>
             )}
           </div>
         )}

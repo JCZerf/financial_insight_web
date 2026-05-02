@@ -76,6 +76,22 @@ function FundRow({ fund, showRank = false }) {
             </p>
           </div>
         )}
+        {fund.ffo_yield != null && (
+          <div className="rounded-md bg-purple-500/10 px-2 py-1.5 sm:bg-transparent sm:p-0 sm:text-right">
+            <p className="text-xs text-muted-foreground">Renda Op.</p>
+            <p className="text-sm font-bold text-purple-600">
+              {formatPercentage(fund.ffo_yield)}
+            </p>
+          </div>
+        )}
+        {fund.cap_rate != null && (
+          <div className="rounded-md bg-amber-500/10 px-2 py-1.5 sm:bg-transparent sm:p-0 sm:text-right">
+            <p className="text-xs text-muted-foreground">Retorno</p>
+            <p className="text-sm font-bold text-amber-600">
+              {formatPercentage(fund.cap_rate)}
+            </p>
+          </div>
+        )}
         {fund.price_to_book != null && (
           <div className="rounded-md bg-blue-500/10 px-2 py-1.5 sm:bg-transparent sm:p-0 sm:text-right">
             <p className="text-xs text-muted-foreground">Preço/valor</p>
