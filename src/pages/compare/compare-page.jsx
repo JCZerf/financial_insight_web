@@ -1,5 +1,5 @@
 import { GitCompareArrows, Plus, Search, X } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { AuthenticatedHeader } from '@/components/layout/authenticated-header'
@@ -133,6 +133,7 @@ function getSummaryBadges(fund) {
 
 export function ComparePage() {
   const navigate = useNavigate()
+  const searchRef = useRef(null)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [options, setOptions] = useState([])
   const [query, setQuery] = useState('')
@@ -140,6 +141,19 @@ export function ComparePage() {
   const [loadingOptions, setLoadingOptions] = useState(true)
   const [adding, setAdding] = useState(false)
   const [error, setError] = useState(null)
+  const [showDropdown, setShowDropdown] = useState(false)
+
+  // Fechar dropdown ao clicar fora
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowDropdown(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   useEffect(() => {
     let isActive = true
@@ -199,6 +213,7 @@ export function ComparePage() {
       const fund = await fetchFundDetail(ticker)
       setSelectedFunds((currentFunds) => [...currentFunds, fund])
       setQuery('')
+      setShowDropdown(false)
     } catch {
       setError(`Não foi possível adicionar ${ticker}. Verifique se o ticker existe na base.`)
     } finally {
@@ -234,7 +249,7 @@ export function ComparePage() {
             </Alert>
           )}
 
-          <Card>
+          <Card className="overflow-visible">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <GitCompareArrows className="size-5 text-primary" />
@@ -246,7 +261,7 @@ export function ComparePage() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="overflow-visible space-y-4">
               <form
                 className="flex flex-col gap-2 sm:flex-row"
                 onSubmit={(event) => {
@@ -254,75 +269,66 @@ export function ComparePage() {
                   addFund()
                 }}
               >
-                <div className="relative flex-1">
+                <div ref={searchRef} className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     value={query}
-                    onChange={(event) => setQuery(event.target.value)}
-                    placeholder="Busque por ticker ou nome do fundo"
+                    onChange={(event) => {
+                      setQuery(event.target.value)
+                      setShowDropdown(true)
+                    }}
+                    onFocus={() => setShowDropdown(true)}
+                    placeholder="Digite o ticker (ex: HGLG11) e pressione Enter"
                     autoComplete="off"
                     className="pl-9"
                   />
+                  
+                  {/* Dropdown de sugestões - só aparece quando há busca */}
+                  {showDropdown && query.trim() && filteredOptions.length > 0 && (
+                    <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-60 overflow-y-auto rounded-md border border-border bg-background shadow-lg">
+                      {filteredOptions.slice(0, 10).map((fund) => (
+                        <button
+                          key={fund.ticker}
+                          type="button"
+                          onClick={() => {
+                            addFund(fund.ticker)
+                          }}
+                          disabled={adding || selectedFunds.length >= MAX_FUNDS}
+                          className="flex w-full items-center justify-between gap-3 border-b border-border px-3 py-2.5 text-left transition-colors last:border-b-0 hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-semibold text-primary">{fund.ticker}</span>
+                              {fund.segment && (
+                                <span className="rounded-full bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
+                                  {fund.segment}
+                                </span>
+                              )}
+                            </div>
+                            {fund.name && (
+                              <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                                {fund.name}
+                              </p>
+                            )}
+                          </div>
+                          <Plus className="size-4 shrink-0 text-muted-foreground" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
+                
                 <Button type="submit" disabled={adding || selectedFunds.length >= MAX_FUNDS}>
                   <Plus className="size-4" />
                   {adding ? 'Adicionando...' : 'Adicionar'}
                 </Button>
               </form>
 
-              <div className="overflow-hidden rounded-lg border border-border bg-background">
-                <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Fundos disponíveis</p>
-                    <p className="text-xs text-muted-foreground">
-                      Pesquise pelo ticker, nome ou segmento e selecione um fundo para comparar.
-                    </p>
-                  </div>
-                  {!loadingOptions && (
-                    <span className="shrink-0 text-xs text-muted-foreground">
-                      {filteredOptions.length} opções
-                    </span>
-                  )}
-                </div>
-
-                <div className="max-h-72 overflow-y-auto">
-                  {loadingOptions ? (
-                    <div className="px-4 py-5 text-sm text-muted-foreground">
-                      Carregando fundos...
-                    </div>
-                  ) : filteredOptions.length > 0 ? (
-                    filteredOptions.map((fund) => (
-                      <button
-                        key={fund.ticker}
-                        type="button"
-                        onClick={() => addFund(fund.ticker)}
-                        disabled={adding || selectedFunds.length >= MAX_FUNDS}
-                        className="flex w-full items-start justify-between gap-4 border-b border-border px-4 py-3 text-left transition-colors last:border-b-0 hover:bg-muted/60 disabled:cursor-not-allowed disabled:opacity-60"
-                      >
-                        <span className="min-w-0">
-                          <span className="flex flex-wrap items-center gap-2">
-                            <span className="text-sm font-semibold text-primary">{fund.ticker}</span>
-                            {fund.segment && (
-                              <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-                                {fund.segment}
-                              </span>
-                            )}
-                          </span>
-                          {fund.name && (
-                            <span className="mt-1 block truncate text-sm text-foreground">
-                              {fund.name}
-                            </span>
-                          )}
-                        </span>
-                        <Plus className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-                      </button>
-                    ))
-                  ) : (
-                    <div className="px-4 py-5 text-sm text-muted-foreground">
-                      Nenhum fundo encontrado para os critérios informados.
-                    </div>
-                  )}
-                </div>
+              <div className="rounded-lg border border-border bg-muted/30 px-4 py-3">
+                <p className="text-sm text-muted-foreground">
+                  💡 <span className="font-medium">Dica:</span> Digite o ticker do fundo (ex: HGLG11, MXRF11) 
+                  ou parte do nome para ver sugestões e adicionar à comparação. Você pode comparar até {MAX_FUNDS} fundos.
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -408,7 +414,7 @@ export function ComparePage() {
                 </CardHeader>
                 <CardContent>
                   <div className="overflow-x-auto">
-                    <table className="w-full min-w-[760px] border-separate border-spacing-0 text-sm">
+                    <table className="w-full min-w-190 border-separate border-spacing-0 text-sm">
                       <thead>
                         <tr>
                           <th className="border-b border-border px-3 py-3 text-left font-medium text-muted-foreground">
