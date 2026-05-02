@@ -1,11 +1,10 @@
-import { LogOut, TrendingUp, DollarSign, Droplets, Award } from 'lucide-react'
+import { TrendingUp, DollarSign, Droplets, Award } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 import { Alert } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Sidebar } from '@/components/layout/sidebar'
+import { AuthenticatedHeader } from '@/components/layout/authenticated-header'
 import { BestOpportunityCard } from '@/components/dashboard/best-opportunity-card'
 import { FundsList } from '@/components/dashboard/funds-list'
 import { HelpButton } from '@/components/dashboard/help-button'
@@ -20,17 +19,10 @@ function cleanFilters(filters) {
 }
 
 export function HomePage() {
-  const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [dashboard, setDashboard] = useState(null)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-
-  function handleLogout() {
-    localStorage.removeItem('access_token')
-    localStorage.removeItem('refresh_token')
-    navigate('/login', { replace: true })
-  }
 
   useEffect(() => {
     let isActive = true
@@ -74,24 +66,10 @@ export function HomePage() {
         sidebarCollapsed ? 'ml-16' : 'ml-16 md:ml-64'
       )}>
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-5">
-          <header className="flex flex-col gap-3 border-b border-border pb-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h1 className="text-2xl font-semibold">Dashboard</h1>
-              <p className="text-sm text-muted-foreground">
-                Análise de Fundos Imobiliários
-              </p>
-            </div>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="w-fit rounded-2xl"
-              onClick={handleLogout}
-            >
-              <LogOut className="size-4" />
-              Sair
-            </Button>
-          </header>
+          <AuthenticatedHeader
+            title="Dashboard"
+            description="Análise de Fundos Imobiliários"
+          />
 
         {loading && !dashboard && (
           <div className="flex items-center justify-center py-12">

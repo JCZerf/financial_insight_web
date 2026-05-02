@@ -1,12 +1,11 @@
-import { ListFilter, LogOut, Search } from 'lucide-react'
+import { ListFilter, Search } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 import { AnalysisFilters } from '@/components/dashboard/analysis-filters'
 import { FundsList } from '@/components/dashboard/funds-list'
 import { Sidebar } from '@/components/layout/sidebar'
+import { AuthenticatedHeader } from '@/components/layout/authenticated-header'
 import { Alert } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { fetchDashboard, fetchFundsList } from '@/lib/api-client'
 import { cn } from '@/lib/utils'
@@ -26,19 +25,12 @@ function cleanFilters(filters) {
 }
 
 export function AnalysisPage() {
-  const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [segments, setSegments] = useState([])
   const [results, setResults] = useState(null)
   const [filters, setFilters] = useState(DEFAULT_ANALYSIS_FILTERS)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-
-  function handleLogout() {
-    localStorage.removeItem('access_token')
-    localStorage.removeItem('refresh_token')
-    navigate('/login', { replace: true })
-  }
 
   async function loadResults(nextFilters = filters) {
     try {
@@ -106,24 +98,10 @@ export function AnalysisPage() {
         sidebarCollapsed ? 'ml-16' : 'ml-16 md:ml-64'
       )}>
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-5">
-          <header className="flex flex-col gap-3 border-b border-border pb-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h1 className="text-2xl font-semibold">Análise de Fundos</h1>
-              <p className="text-sm text-muted-foreground">
-                Aplicação de critérios personalizados para triagem de fundos imobiliários.
-              </p>
-            </div>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="w-fit rounded-2xl"
-              onClick={handleLogout}
-            >
-              <LogOut className="size-4" />
-              Sair
-            </Button>
-          </header>
+          <AuthenticatedHeader
+            title="Análise de Fundos"
+            description="Aplicação de critérios personalizados para triagem de fundos imobiliários."
+          />
 
           {loading && segments.length === 0 && !results && (
             <div className="flex items-center justify-center py-12">

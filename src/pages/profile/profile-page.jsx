@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { User, Mail, Calendar, LogOut } from 'lucide-react'
+import { User, Mail, Calendar } from 'lucide-react'
 
 import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -8,13 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Sidebar } from '@/components/layout/sidebar'
+import { AuthenticatedHeader } from '@/components/layout/authenticated-header'
 import { HelpButton } from '@/components/dashboard/help-button'
 import { cn } from '@/lib/utils'
 import { fetchUserProfile, updateUserProfile } from '@/lib/api-client'
 import { formatBirthDate, birthDateToApiDate } from '@/features/auth/lib/auth-validators'
 
 export function ProfilePage() {
-  const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
   const [error, setError] = useState(null)
@@ -25,12 +24,6 @@ export function ProfilePage() {
     birth_date: '',
   })
   const [userData, setUserData] = useState(null)
-
-  function handleLogout() {
-    localStorage.removeItem('access_token')
-    localStorage.removeItem('refresh_token')
-    navigate('/login', { replace: true })
-  }
 
   // Converte data da API (YYYY-MM-DD) para formato brasileiro (DD/MM/YYYY)
   function apiDateToBirthDate(apiDate) {
@@ -109,24 +102,11 @@ export function ProfilePage() {
         sidebarCollapsed ? 'ml-16' : 'ml-16 md:ml-64'
       )}>
         <div className="mx-auto flex w-full max-w-4xl flex-col gap-5">
-          <header className="flex flex-col gap-3 border-b border-border pb-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h1 className="text-2xl font-semibold">Perfil</h1>
-              <p className="text-sm text-muted-foreground">
-                Gerencie suas informações pessoais
-              </p>
-            </div>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="w-fit rounded-2xl"
-              onClick={handleLogout}
-            >
-              <LogOut className="size-4" />
-              Sair
-            </Button>
-          </header>
+          <AuthenticatedHeader
+            title="Perfil"
+            description="Gerencie suas informações pessoais"
+            user={userData}
+          />
 
           {loading && (
             <div className="flex items-center justify-center py-12">

@@ -1,7 +1,6 @@
 import { Home, PanelLeftClose, PanelLeftOpen, SlidersHorizontal, User } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-import { ThemeToggle } from '@/components/layout/theme-toggle'
 import { cn } from '@/lib/utils'
 import logo from '@/assets/financial_insight_logo.png'
 
@@ -82,9 +81,7 @@ export function Sidebar({ className, isCollapsed, onToggle, currentPath = '/home
           </ul>
         </nav>
 
-        <div className="hidden space-y-1 border-t border-border px-2 py-2 md:block">
-          <ThemeToggle isCollapsed={isCollapsed} />
-
+        <div className="hidden border-t border-border px-2 py-2 md:block">
           <button
             type="button"
             onClick={onToggle}
