@@ -1,6 +1,37 @@
-import { getApiBaseUrl } from '@/features/auth/lib/auth-client'
+import { getApiBaseUrl, refreshAccessToken } from '@/features/auth/lib/auth-client'
 
 const GENERIC_REQUEST_ERROR = 'Não foi possível concluir a solicitação agora. Tente novamente em instantes.'
+let isRefreshing = false
+let refreshPromise = null
+
+async function tryRefreshToken() {
+  // Se já está fazendo refresh, retorna a promise existente
+  if (isRefreshing) {
+    return refreshPromise
+  }
+
+  const refreshToken = localStorage.getItem('refresh_token')
+  if (!refreshToken) {
+    return null
+  }
+
+  isRefreshing = true
+  refreshPromise = refreshAccessToken(refreshToken)
+    .then((data) => {
+      if (data?.access) {
+        localStorage.setItem('access_token', data.access)
+        return data.access
+      }
+      return null
+    })
+    .catch(() => null)
+    .finally(() => {
+      isRefreshing = false
+      refreshPromise = null
+    })
+
+  return refreshPromise
+}
 
 export async function requestApi(path, options = {}) {
   const {
@@ -30,6 +61,30 @@ export async function requestApi(path, options = {}) {
     })
   } catch {
     throw new Error('Não foi possível conectar ao servidor. Tente novamente em instantes.')
+  }
+
+  // Se recebeu 401 e requer autenticação, tenta refresh
+  if (response.status === 401 && requiresAuth) {
+    const newToken = await tryRefreshToken()
+    
+    if (newToken) {
+      // Retry da requisição com novo token
+      headers.Authorization = `Bearer ${newToken}`
+      try {
+        response = await fetch(`${getApiBaseUrl()}${path}`, {
+          headers,
+          ...fetchOptions,
+        })
+      } catch {
+        throw new Error('Não foi possível conectar ao servidor. Tente novamente em instantes.')
+      }
+    } else {
+      // Refresh falhou, limpa tokens e redireciona
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('refresh_token')
+      window.location.href = '/login'
+      throw new Error('Sessão expirada. Redirecionando para login...')
+    }
   }
 
   const text = await response.text()

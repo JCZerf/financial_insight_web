@@ -99,6 +99,14 @@ export async function loginWithJwt(credentials) {
   })
 }
 
+export async function refreshAccessToken(refreshToken) {
+  return requestJson(`${getApiBaseUrl()}/api/auth/jwt/refresh/`, {
+    method: 'POST',
+    body: JSON.stringify({ refresh: refreshToken }),
+    errorMessage: 'Não foi possível renovar a sessão.',
+  })
+}
+
 export async function fetchAuthenticatedUser(accessToken) {
   return requestJson(`${getApiBaseUrl()}/api/auth/users/me/`, {
     method: 'GET',
