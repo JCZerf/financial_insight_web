@@ -339,11 +339,11 @@ export function FundDetailPage() {
                       value={formatCompactCurrency(fund.detail.results.last_3m_revenue)}
                     />
                     <MetricItem
-                      label="Resultado operacional (12M)"
+                      label="FFO (12M)"
                       value={formatCompactCurrency(fund.detail.results.last_12m_ffo)}
                     />
                     <MetricItem
-                      label="Resultado operacional (3M)"
+                      label="FFO (3M)"
                       value={formatCompactCurrency(fund.detail.results.last_3m_ffo)}
                     />
                     <MetricItem
@@ -354,6 +354,18 @@ export function FundDetailPage() {
                       label="Renda Distribuída (3M)"
                       value={formatCompactCurrency(fund.detail.results.last_3m_distributed_income)}
                     />
+                    {fund.detail.results.last_12m_asset_sales != null && (
+                      <MetricItem
+                        label="Venda de Ativos (12M)"
+                        value={formatCompactCurrency(fund.detail.results.last_12m_asset_sales)}
+                      />
+                    )}
+                    {fund.detail.results.last_3m_asset_sales != null && (
+                      <MetricItem
+                        label="Venda de Ativos (3M)"
+                        value={formatCompactCurrency(fund.detail.results.last_3m_asset_sales)}
+                      />
+                    )}
                   </div>
                 </InfoSection>
               )}
