@@ -1,4 +1,5 @@
 import { TrendingUp, Building2, Award } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
@@ -24,8 +25,17 @@ function formatNumber(value, decimals = 0) {
 }
 
 function FundRow({ fund, showRank = false }) {
+  const navigate = useNavigate()
+
+  const handleClick = () => {
+    navigate(`/home/fundo/${fund.ticker}`)
+  }
+
   return (
-    <div className="flex items-center gap-4 border-b border-border py-3.5 last:border-0 hover:bg-muted/30 transition-colors">
+    <div 
+      onClick={handleClick}
+      className="flex cursor-pointer items-center gap-4 border-b border-border py-3.5 last:border-0 hover:bg-muted/50 transition-colors"
+    >
       {showRank && fund.rank && (
         <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-sm font-bold text-primary">
           {fund.rank}

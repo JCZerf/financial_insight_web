@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
 import { hasStoredAuthTokens } from '@/features/auth/lib/auth-client'
 import { HomePage } from '@/pages/home/home-page'
+import { FundDetailPage } from '@/pages/home/fund-detail-page'
 import { LoginPage } from '@/pages/login/login-page'
 import { RegisterPage } from '@/pages/register/register-page'
 import { ProfilePage } from '@/pages/profile/profile-page'
@@ -25,6 +26,14 @@ export function AppRouter() {
           element={(
             <PrivateRoute>
               <HomePage />
+            </PrivateRoute>
+          )}
+        />
+        <Route
+          path="/home/fundo/:ticker"
+          element={(
+            <PrivateRoute>
+              <FundDetailPage />
             </PrivateRoute>
           )}
         />

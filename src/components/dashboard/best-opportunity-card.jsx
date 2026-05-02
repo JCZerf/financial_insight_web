@@ -1,6 +1,8 @@
 import { Award, TrendingUp, Building2 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 
 function formatCurrency(value) {
   if (value == null) return '—'
@@ -24,6 +26,14 @@ function formatNumber(value, decimals = 0) {
 }
 
 export function BestOpportunityCard({ fund }) {
+  const navigate = useNavigate()
+
+  const handleViewDetails = () => {
+    if (fund?.ticker) {
+      navigate(`/home/fundo/${fund.ticker}`)
+    }
+  }
+
   if (!fund) {
     return (
       <Card>
@@ -46,18 +56,29 @@ export function BestOpportunityCard({ fund }) {
   }
 
   return (
-    <Card className="border-primary/50 bg-gradient-to-br from-primary/10 to-primary/5">
+    <Card className="border-primary/50 bg-linear-to-br from-primary/10 to-primary/5">
       <CardHeader className="pb-4">
-        <div className="flex items-center gap-2">
-          <div className="rounded-lg bg-primary/20 p-2">
-            <Award className="size-5 text-primary" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="rounded-lg bg-primary/20 p-2">
+              <Award className="size-5 text-primary" />
+            </div>
+            <div>
+              <CardTitle className="text-lg">Melhor Oportunidade</CardTitle>
+              <CardDescription className="mt-0.5">
+                Melhor combinação de rendimento, preço e liquidez
+              </CardDescription>
+            </div>
           </div>
-          <div>
-            <CardTitle className="text-lg">Melhor Oportunidade</CardTitle>
-            <CardDescription className="mt-0.5">
-              Melhor combinação de rendimento, preço e liquidez
-            </CardDescription>
-          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={handleViewDetails}
+            className="shrink-0"
+          >
+            Ver Detalhes
+          </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
