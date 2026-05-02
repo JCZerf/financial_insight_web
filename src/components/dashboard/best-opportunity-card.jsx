@@ -58,7 +58,7 @@ export function BestOpportunityCard({ fund }) {
   return (
     <Card className="border-primary/50 bg-linear-to-br from-primary/10 to-primary/5">
       <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <div className="rounded-lg bg-primary/20 p-2">
               <Award className="size-5 text-primary" />
@@ -66,7 +66,7 @@ export function BestOpportunityCard({ fund }) {
             <div>
               <CardTitle className="text-lg">Melhor Oportunidade</CardTitle>
               <CardDescription className="mt-0.5">
-                Melhor combinação de rendimento, preço e liquidez
+                Boa combinação de renda, preço e facilidade para negociar
               </CardDescription>
             </div>
           </div>
@@ -75,7 +75,7 @@ export function BestOpportunityCard({ fund }) {
             variant="outline"
             size="sm"
             onClick={handleViewDetails}
-            className="shrink-0"
+            className="w-fit shrink-0"
           >
             Ver Detalhes
           </Button>
@@ -93,7 +93,6 @@ export function BestOpportunityCard({ fund }) {
           )}
         </div>
 
-        {/* Preço e Pontuação */}
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-lg bg-background/80 p-3">
             <p className="text-xs font-medium text-muted-foreground">Preço da Cota</p>
@@ -101,18 +100,18 @@ export function BestOpportunityCard({ fund }) {
           </div>
           {fund.score != null && (
             <div className="rounded-lg bg-background/80 p-3">
-              <p className="text-xs font-medium text-muted-foreground">Pontuação</p>
+              <p className="text-xs font-medium text-muted-foreground">Nota da Oportunidade</p>
               <p className="mt-1 text-xl font-bold text-primary">{formatNumber(fund.score, 2)}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">quanto maior, melhor</p>
             </div>
           )}
         </div>
 
-        {/* Métricas principais em grid */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid gap-3 sm:grid-cols-3">
           <div className="rounded-lg border border-green-500/20 bg-green-500/5 p-3">
             <div className="flex items-center gap-1.5">
               <TrendingUp className="size-3.5 text-green-600 dark:text-green-400" />
-              <p className="text-xs font-medium text-muted-foreground">Rendimento</p>
+              <p className="text-xs font-medium text-muted-foreground">Renda</p>
             </div>
             <p className="mt-1.5 text-xl font-bold text-green-600 dark:text-green-400">
               {formatPercentage(fund.dividend_yield)}
@@ -123,13 +122,13 @@ export function BestOpportunityCard({ fund }) {
           <div className="rounded-lg border border-blue-500/20 bg-blue-500/5 p-3">
             <div className="flex items-center gap-1.5">
               <TrendingUp className="size-3.5 text-blue-600 dark:text-blue-400" />
-              <p className="text-xs font-medium text-muted-foreground">P/VP</p>
+              <p className="text-xs font-medium text-muted-foreground">Preço/valor</p>
             </div>
             <p className="mt-1.5 text-xl font-bold text-blue-600 dark:text-blue-400">
               {formatNumber(fund.price_to_book, 2)}
             </p>
             <p className="mt-0.5 text-xs text-muted-foreground">
-              {fund.price_to_book < 1 ? 'com desconto' : 'preço justo'}
+              {fund.price_to_book < 1 ? 'mais barato que o patrimônio' : 'perto ou acima do patrimônio'}
             </p>
           </div>
 
@@ -141,11 +140,10 @@ export function BestOpportunityCard({ fund }) {
             <p className="mt-1.5 text-lg font-bold text-cyan-600 dark:text-cyan-400">
               {formatCurrency(fund.liquidity)}
             </p>
-            <p className="mt-0.5 text-xs text-muted-foreground">por dia</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">negociados por dia</p>
           </div>
         </div>
 
-        {/* Informações adicionais */}
         {(fund.property_count != null || fund.avg_vacancy != null) && (
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
             {fund.property_count != null && (

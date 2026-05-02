@@ -1,4 +1,3 @@
-import { TrendingUp, Building2, Award } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -31,17 +30,27 @@ function FundRow({ fund, showRank = false }) {
     navigate(`/home/fundo/${fund.ticker}`)
   }
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      handleClick()
+    }
+  }
+
   return (
     <div 
       onClick={handleClick}
-      className="flex cursor-pointer items-center gap-4 border-b border-border py-3.5 last:border-0 hover:bg-muted/50 transition-colors"
+      onKeyDown={handleKeyDown}
+      role="button"
+      tabIndex={0}
+      className="flex cursor-pointer flex-col gap-3 border-b border-border py-3.5 transition-colors last:border-0 hover:bg-muted/50 sm:flex-row sm:items-center sm:gap-4"
     >
       {showRank && fund.rank && (
         <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-sm font-bold text-primary">
           {fund.rank}
         </div>
       )}
-      <div className="flex-1">
+      <div className="w-full flex-1">
         <div className="flex items-baseline gap-2">
           <p className="text-base font-bold">{fund.ticker}</p>
           {fund.segment && (
@@ -54,22 +63,22 @@ function FundRow({ fund, showRank = false }) {
           <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1">{fund.name}</p>
         )}
       </div>
-      <div className="flex items-center gap-4">
-        <div className="text-right">
+      <div className="grid w-full grid-cols-3 gap-2 sm:w-auto sm:flex sm:items-center sm:gap-4">
+        <div className="rounded-md bg-muted/40 px-2 py-1.5 sm:bg-transparent sm:p-0 sm:text-right">
           <p className="text-xs text-muted-foreground">Preço</p>
           <p className="text-sm font-bold">{formatCurrency(fund.price)}</p>
         </div>
         {fund.dividend_yield != null && (
-          <div className="text-right">
-            <p className="text-xs text-muted-foreground">Rendimento</p>
+          <div className="rounded-md bg-green-500/10 px-2 py-1.5 sm:bg-transparent sm:p-0 sm:text-right">
+            <p className="text-xs text-muted-foreground">Renda</p>
             <p className="text-sm font-bold text-green-600">
               {formatPercentage(fund.dividend_yield)}
             </p>
           </div>
         )}
         {fund.price_to_book != null && (
-          <div className="text-right">
-            <p className="text-xs text-muted-foreground">P/VP</p>
+          <div className="rounded-md bg-blue-500/10 px-2 py-1.5 sm:bg-transparent sm:p-0 sm:text-right">
+            <p className="text-xs text-muted-foreground">Preço/valor</p>
             <p className={`text-sm font-bold ${fund.price_to_book < 1 ? 'text-green-600' : 'text-foreground'}`}>
               {formatNumber(fund.price_to_book, 2)}
             </p>

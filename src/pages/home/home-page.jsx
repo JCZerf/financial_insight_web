@@ -94,7 +94,7 @@ export function HomePage() {
                 Visão Geral do Mercado
               </h2>
               <p className="mb-4 text-sm text-muted-foreground">
-                Panorama do mercado com base em {dashboard.metadata?.ranked_funds ?? 0} fundos imobiliários
+                Análise consolidada de {dashboard.metadata?.ranked_funds ?? 0} fundos imobiliários
               </p>
               <SummaryCards summary={dashboard.summary} />
             </div>
@@ -102,17 +102,18 @@ export function HomePage() {
             <BestOpportunityCard fund={dashboard.summary?.best_opportunity} />
 
             <Tabs defaultValue="opportunities" className="w-full">
-              <div className="flex items-center justify-between">
-                <TabsList className="grid w-fit grid-cols-4">
-                  <TabsTrigger value="opportunities">Oportunidades</TabsTrigger>
-                  <TabsTrigger value="dividend">Maiores Rendimentos</TabsTrigger>
-                  <TabsTrigger value="discounted">Descontados</TabsTrigger>
-                  <TabsTrigger value="liquid">Mais Líquidos</TabsTrigger>
-                </TabsList>
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                <div className="w-full lg:w-auto">
+                  <TabsList className="grid h-auto w-full grid-cols-2 gap-1 sm:grid-cols-4 lg:w-fit">
+                    <TabsTrigger value="opportunities">Oportunidades</TabsTrigger>
+                    <TabsTrigger value="dividend">Maiores Rendimentos</TabsTrigger>
+                    <TabsTrigger value="discounted">Mais Baratos</TabsTrigger>
+                    <TabsTrigger value="liquid">Mais Líquidos</TabsTrigger>
+                  </TabsList>
+                </div>
                 
-                {/* Informações da base de dados - compacta */}
                 {dashboard.metadata?.latest_collected_at_utc && (
-                  <div className="hidden items-center gap-2 text-xs text-muted-foreground lg:flex">
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                     <span>
                       {dashboard.metadata?.ranked_funds ?? 0} de {dashboard.metadata?.total_funds ?? 0} fundos
                     </span>
@@ -133,7 +134,7 @@ export function HomePage() {
               <TabsContent value="opportunities" className="mt-6">
                 <FundsList
                   title="Melhores Oportunidades"
-                  description="Fundos com melhor equilíbrio entre rendimento, preço atrativo e facilidade para negociar"
+                  description="Fundos que juntam boa renda, preço interessante e facilidade para comprar ou vender"
                   funds={dashboard.opportunities}
                   icon={Award}
                   showRank={true}
@@ -143,7 +144,7 @@ export function HomePage() {
               <TabsContent value="dividend" className="mt-6">
                 <FundsList
                   title="Maiores Rendimentos"
-                  description="Fundos que pagam mais dividendos por mês"
+                  description="Fundos que mais pagam renda em relação ao preço da cota"
                   funds={dashboard.high_dividend}
                   icon={TrendingUp}
                   showRank={false}
@@ -152,8 +153,8 @@ export function HomePage() {
 
               <TabsContent value="discounted" className="mt-6">
                 <FundsList
-                  title="Fundos Descontados"
-                  description="Fundos negociando abaixo do valor patrimonial (P/VP < 1.0)"
+                  title="Fundos Mais Baratos"
+                  description="Fundos sendo negociados por menos do que o valor patrimonial estimado"
                   funds={dashboard.discounted}
                   icon={DollarSign}
                   showRank={false}
@@ -163,7 +164,7 @@ export function HomePage() {
               <TabsContent value="liquid" className="mt-6">
                 <FundsList
                   title="Fundos Mais Líquidos"
-                  description="Fundos com maior volume de negociação"
+                  description="Fundos com maior facilidade para comprar ou vender no mercado"
                   funds={dashboard.most_liquid}
                   icon={Droplets}
                   showRank={false}

@@ -22,14 +22,13 @@ export function MetricsGuide() {
 
       <CollapsibleContent isOpen={isOpen}>
         <div className="space-y-5 p-6 pt-2">
-          {/* Dividend Yield */}
           <div className="rounded-lg bg-background/50 p-4">
             <div className="mb-2 flex items-start gap-2">
               <TrendingUp className="mt-0.5 size-4 text-primary" />
               <div className="flex-1">
-                <h3 className="font-semibold text-foreground">Dividend Yield (DY)</h3>
+                <h3 className="font-semibold text-foreground">Renda do Fundo</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Percentual de rendimento que o fundo paga em relação ao preço da cota
+                  Mostra quanto o fundo costuma pagar de rendimentos em relação ao preço da cota
                 </p>
               </div>
             </div>
@@ -49,41 +48,39 @@ export function MetricsGuide() {
             </div>
           </div>
 
-          {/* P/VP */}
           <div className="rounded-lg bg-background/50 p-4">
             <div className="mb-2 flex items-start gap-2">
               <DollarSign className="mt-0.5 size-4 text-primary" />
               <div className="flex-1">
-                <h3 className="font-semibold text-foreground">Preço sobre Valor Patrimonial (P/VP)</h3>
+                <h3 className="font-semibold text-foreground">Preço vs Patrimônio</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Indica se o fundo está sendo negociado com desconto ou prêmio em relação ao seu patrimônio
+                  Compara o preço da cota com o valor patrimonial estimado do fundo
                 </p>
               </div>
             </div>
             <div className="ml-6 mt-3 grid gap-2 text-sm sm:grid-cols-3">
               <div className="rounded-md bg-green-500/10 px-3 py-2">
-                <div className="font-semibold text-green-700 dark:text-green-400">✓ P/VP &lt; 1.0</div>
-                <div className="text-xs text-muted-foreground">Negociando com desconto</div>
+                <div className="font-semibold text-green-700 dark:text-green-400">Abaixo de 1.0</div>
+                <div className="text-xs text-muted-foreground">Pode estar mais barato</div>
               </div>
               <div className="rounded-md bg-yellow-500/10 px-3 py-2">
-                <div className="font-semibold text-yellow-700 dark:text-yellow-400">≈ P/VP ≈ 1.0</div>
-                <div className="text-xs text-muted-foreground">Preço justo</div>
+                <div className="font-semibold text-yellow-700 dark:text-yellow-400">Perto de 1.0</div>
+                <div className="text-xs text-muted-foreground">Perto do patrimônio</div>
               </div>
               <div className="rounded-md bg-red-500/10 px-3 py-2">
-                <div className="font-semibold text-red-700 dark:text-red-400">✗ P/VP &gt; 1.0</div>
-                <div className="text-xs text-muted-foreground">Negociando com prêmio</div>
+                <div className="font-semibold text-red-700 dark:text-red-400">Acima de 1.0</div>
+                <div className="text-xs text-muted-foreground">Pode estar mais caro</div>
               </div>
             </div>
           </div>
 
-          {/* Liquidez */}
           <div className="rounded-lg bg-background/50 p-4">
             <div className="mb-2 flex items-start gap-2">
               <Droplets className="mt-0.5 size-4 text-primary" />
               <div className="flex-1">
-                <h3 className="font-semibold text-foreground">Liquidez Diária</h3>
+                <h3 className="font-semibold text-foreground">Facilidade para Negociar</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Volume médio negociado por dia. Maior liquidez facilita compra e venda sem grandes oscilações de preço
+                  Mostra quanto dinheiro costuma ser negociado por dia. Quanto maior, mais fácil comprar ou vender
                 </p>
               </div>
             </div>
@@ -103,19 +100,18 @@ export function MetricsGuide() {
             </div>
           </div>
 
-          {/* Dica importante */}
           <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-4">
             <div className="flex items-start gap-2">
               <Award className="mt-0.5 size-4 text-amber-600 dark:text-amber-400" />
               <div className="flex-1">
                 <h3 className="font-semibold text-amber-900 dark:text-amber-300">
                   Dica de Análise
-                </h3>
-                <p className="mt-1.5 text-sm text-amber-800 dark:text-amber-200">
-                  As melhores oportunidades combinam <strong>DY alto</strong> (bons rendimentos), <strong>P/VP baixo</strong> (preço atrativo) e <strong>liquidez adequada</strong> (facilidade para negociar). Não olhe métricas isoladas - a análise conjunta é fundamental!
-                </p>
-              </div>
+              </h3>
+              <p className="mt-1.5 text-sm text-amber-800 dark:text-amber-200">
+                  Uma boa oportunidade costuma juntar <strong>boa renda</strong>, <strong>preço interessante</strong> e <strong>facilidade para negociar</strong>. Evite decidir olhando apenas um número isolado.
+              </p>
             </div>
+          </div>
           </div>
         </div>
       </CollapsibleContent>

@@ -1,10 +1,10 @@
-import { ArrowLeft, TrendingUp, DollarSign, Calendar, Building2, Users, BarChart3, Droplets, TrendingDown } from 'lucide-react'
+import { ArrowLeft, TrendingUp, DollarSign, Calendar, Building2, BarChart3, Droplets } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Sidebar } from '@/components/layout/sidebar'
 import { fetchFundDetail } from '@/lib/api-client'
 import { cn } from '@/lib/utils'

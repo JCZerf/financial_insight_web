@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown, Percent, DollarSign, Droplets } from 'lucide-react'
+import { TrendingUp, Percent, DollarSign, Droplets } from 'lucide-react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
@@ -25,6 +25,27 @@ function formatNumber(value, decimals = 0) {
   }).format(value)
 }
 
+function getYieldStatus(value) {
+  if (value == null) return 'sem leitura'
+  if (value >= 8) return 'renda alta'
+  if (value >= 6) return 'renda ok'
+  return 'renda baixa'
+}
+
+function getPvpStatus(value) {
+  if (value == null) return 'sem leitura'
+  if (value < 0.95) return 'mais barato'
+  if (value <= 1.05) return 'perto do justo'
+  return 'mais caro'
+}
+
+function getLiquidityStatus(value) {
+  if (value == null) return 'sem leitura'
+  if (value >= 500_000) return 'fácil de negociar'
+  if (value >= 100_000) return 'negociação ok'
+  return 'pouco negociado'
+}
+
 export function SummaryCards({ summary }) {
   if (!summary) return null
 
@@ -36,7 +57,6 @@ export function SummaryCards({ summary }) {
 
   return (
     <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-      {/* Rendimento Médio */}
       <Card className="border-l-4 border-l-green-500 transition-all hover:shadow-md">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
@@ -51,16 +71,15 @@ export function SummaryCards({ summary }) {
             {formatPercentage(summary.average_dividend_yield)}
           </div>
           <p className="mt-0.5 text-xs font-medium text-muted-foreground">
-            ao ano
+            ao ano · {getYieldStatus(dyValue)}
           </p>
         </CardContent>
       </Card>
 
-      {/* P/VP Mediano */}
       <Card className="border-l-4 border-l-blue-500 transition-all hover:shadow-md">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-xs font-medium text-muted-foreground">P/VP Mediano</CardTitle>
+            <CardTitle className="text-xs font-medium text-muted-foreground">Preço vs Patrimônio</CardTitle>
             <div className="rounded-full bg-blue-500/10 p-1.5">
               <DollarSign className="size-3.5 text-blue-600 dark:text-blue-400" />
             </div>
@@ -73,12 +92,11 @@ export function SummaryCards({ summary }) {
               : '—'}
           </div>
           <p className="mt-0.5 text-xs font-medium text-muted-foreground">
-            preço / valor patrimonial
+            {getPvpStatus(pvpValue)} · P/VP mediano
           </p>
         </CardContent>
       </Card>
 
-      {/* Liquidez Média */}
       <Card className="border-l-4 border-l-cyan-500 transition-all hover:shadow-md">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
@@ -93,16 +111,15 @@ export function SummaryCards({ summary }) {
             {formatCurrency(summary.average_liquidity)}
           </div>
           <p className="mt-0.5 text-xs font-medium text-muted-foreground">
-            volume diário
+            volume diário · {getLiquidityStatus(summary.average_liquidity)}
           </p>
         </CardContent>
       </Card>
 
-      {/* FIIs Descontados */}
       <Card className="border-l-4 border-l-emerald-500 transition-all hover:shadow-md">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-xs font-medium text-muted-foreground">FIIs Descontados</CardTitle>
+            <CardTitle className="text-xs font-medium text-muted-foreground">Fundos Mais Baratos</CardTitle>
             <div className="rounded-full bg-emerald-500/10 p-1.5">
               <TrendingUp className="size-3.5 text-emerald-600 dark:text-emerald-400" />
             </div>
@@ -113,7 +130,7 @@ export function SummaryCards({ summary }) {
             {summary.discounted_funds_count ?? 0}
           </div>
           <p className="mt-0.5 text-xs font-medium text-muted-foreground">
-            com P/VP abaixo de 1.0
+            abaixo do patrimônio estimado
           </p>
         </CardContent>
       </Card>
