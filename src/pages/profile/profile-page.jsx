@@ -13,6 +13,19 @@ import { cn } from '@/lib/utils'
 import { fetchUserProfile, updateUserProfile } from '@/lib/api-client'
 import { formatBirthDate, birthDateToApiDate } from '@/features/auth/lib/auth-validators'
 
+function apiDateToBirthDate(apiDate) {
+  if (!apiDate) return ''
+  const [year, month, day] = apiDate.split('-')
+  return `${day}${month}${year}`
+}
+
+function profileToFormData(data) {
+  return {
+    name: data?.name || '',
+    birth_date: data?.birth_date ? formatBirthDate(apiDateToBirthDate(data.birth_date)) : '',
+  }
+}
+
 export function ProfilePage() {
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
@@ -23,14 +36,15 @@ export function ProfilePage() {
     name: '',
     birth_date: '',
   })
+  const [initialFormData, setInitialFormData] = useState({
+    name: '',
+    birth_date: '',
+  })
   const [userData, setUserData] = useState(null)
-
-  // Converte data da API (YYYY-MM-DD) para formato brasileiro (DD/MM/YYYY)
-  function apiDateToBirthDate(apiDate) {
-    if (!apiDate) return ''
-    const [year, month, day] = apiDate.split('-')
-    return `${day}${month}${year}`
-  }
+  const hasChanges = (
+    formData.name.trim() !== initialFormData.name.trim()
+    || formData.birth_date !== initialFormData.birth_date
+  )
 
   useEffect(() => {
     async function loadProfile() {
@@ -38,11 +52,10 @@ export function ProfilePage() {
         setLoading(true)
         setError(null)
         const data = await fetchUserProfile()
+        const nextFormData = profileToFormData(data)
         setUserData(data)
-        setFormData({
-          name: data.name || '',
-          birth_date: data.birth_date ? formatBirthDate(apiDateToBirthDate(data.birth_date)) : '',
-        })
+        setFormData(nextFormData)
+        setInitialFormData(nextFormData)
       } catch (err) {
         setError(err.message)
       } finally {
@@ -55,6 +68,8 @@ export function ProfilePage() {
 
   async function handleSubmit(e) {
     e.preventDefault()
+    if (!hasChanges) return
+
     try {
       setUpdating(true)
       setError(null)
@@ -69,11 +84,10 @@ export function ProfilePage() {
       
       // Recarrega os dados
       const data = await fetchUserProfile()
+      const nextFormData = profileToFormData(data)
       setUserData(data)
-      setFormData({
-        name: data.name || '',
-        birth_date: data.birth_date ? formatBirthDate(apiDateToBirthDate(data.birth_date)) : '',
-      })
+      setFormData(nextFormData)
+      setInitialFormData(nextFormData)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -257,19 +271,18 @@ export function ProfilePage() {
                         variant="outline"
                         onClick={() => {
                           setFormData({
-                            name: userData.name || '',
-                            birth_date: userData.birth_date ? formatBirthDate(apiDateToBirthDate(userData.birth_date)) : '',
+                            ...initialFormData,
                           })
                           setError(null)
                           setSuccess(null)
                         }}
-                        disabled={updating}
+                        disabled={updating || !hasChanges}
                       >
                         Cancelar
                       </Button>
                       <Button
                         type="submit"
-                        disabled={updating}
+                        disabled={updating || !hasChanges}
                       >
                         {updating ? 'Salvando...' : 'Salvar Alterações'}
                       </Button>
