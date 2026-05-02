@@ -1,13 +1,13 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
+@import "@fontsource/inter";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Geist Variable", sans-serif;
-  --font-heading: "Space Grotesk", "Geist Variable", sans-serif;
+  --font-sans: "Inter", sans-serif;
+  --font-heading: "Inter", sans-serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -28,6 +28,12 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-text-secondary: var(--text-secondary);
+  --color-financial-positive: var(--financial-positive);
+  --color-financial-negative: var(--financial-negative);
+  --color-financial-warning: var(--financial-warning);
 
   --radius-sm: calc(var(--radius) - 0.25rem);
   --radius-md: calc(var(--radius) - 0.125rem);
@@ -38,26 +44,60 @@
 }
 
 :root {
-  --background: #f5f7fb;
-  --foreground: #0f172a;
-  --card: rgba(255, 255, 255, 0.92);
-  --card-foreground: #0f172a;
+  --background: #f7f8fa;
+  --foreground: #0f1117;
+  --card: #ffffff;
+  --card-foreground: #0f1117;
   --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: #0f766e;
+  --popover-foreground: #0f1117;
+  --primary: #00897b;
   --primary-foreground: #f8fafc;
-  --secondary: #e2e8f0;
-  --secondary-foreground: #0f172a;
-  --muted: #eef2f7;
-  --muted-foreground: #64748b;
-  --accent: #ea580c;
-  --accent-foreground: #fff7ed;
+  --secondary: #eef1f4;
+  --secondary-foreground: #0f1117;
+  --muted: #f1f3f6;
+  --muted-foreground: #5c6070;
+  --accent: #00897b;
+  --accent-foreground: #f8fafc;
   --destructive: #dc2626;
   --destructive-foreground: #fef2f2;
-  --border: #d8e0eb;
-  --input: #d8e0eb;
-  --ring: rgba(15, 118, 110, 0.35);
+  --border: #dfe4ea;
+  --input: #dfe4ea;
+  --ring: rgba(0, 137, 123, 0.28);
+  --brand: #00897b;
+  --brand-foreground: #f8fafc;
+  --text-secondary: #5c6070;
+  --financial-positive: #2e7d52;
+  --financial-negative: #c62828;
+  --financial-warning: #b45309;
   --radius: 1rem;
+}
+
+.dark {
+  --background: #0f1117;
+  --foreground: #f7f8fa;
+  --card: #181b24;
+  --card-foreground: #f7f8fa;
+  --popover: #181b24;
+  --popover-foreground: #f7f8fa;
+  --primary: #26a69a;
+  --primary-foreground: #081311;
+  --secondary: #202531;
+  --secondary-foreground: #f7f8fa;
+  --muted: #1c212c;
+  --muted-foreground: #a0a7b5;
+  --accent: #26a69a;
+  --accent-foreground: #081311;
+  --destructive: #ef5350;
+  --destructive-foreground: #2b0d0d;
+  --border: #2b3340;
+  --input: #2b3340;
+  --ring: rgba(38, 166, 154, 0.35);
+  --brand: #26a69a;
+  --brand-foreground: #081311;
+  --text-secondary: #a0a7b5;
+  --financial-positive: #4caf7a;
+  --financial-negative: #ef5350;
+  --financial-warning: #d97706;
 }
 
 @layer base {
@@ -72,8 +112,8 @@
   body {
     @apply min-w-80 bg-background text-foreground antialiased;
     background-image:
-      radial-gradient(circle at top, rgba(14, 116, 144, 0.1), transparent 28%),
-      linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+      radial-gradient(circle at top, rgba(0, 137, 123, 0.08), transparent 28%),
+      linear-gradient(180deg, #fafbfc 0%, #f7f8fa 100%);
   }
 
   h1,
